@@ -5,8 +5,8 @@ services:
     image: slickframework/nginx
     ports:
       - 8880:80
-    #volumes_from:
-    #  - php
+    volumes_from:
+      - php
     environment:
       - CONF_APP=slick
       - CONF_PUBLIC=webroot
@@ -15,5 +15,5 @@ services:
   php:
     image: slickframework/php:5.5
     volumes:
-      - ./:/var/www/html
+      - ./:/usr/src/app
     working_dir: /usr/src/app

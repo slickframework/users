@@ -8,7 +8,7 @@
 [![Total Downloads][ico-downloads]][link-downloads]
 
 Users is an application ready and a package that can be added to your Slick web application
-tp provide an easy and simple user management feature.
+to provide an easy and simple user management feature.
 
 PSRs you support to avoid any confusion with users and contributors.
 
