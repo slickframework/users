@@ -1,0 +1,18 @@
+# Route definitio file
+routes:
+  home:
+    allows: [POST, GET]
+    path: /
+    defaults:
+      controller: pages
+      action: home
+  catchall:
+    allows: [POST, GET]
+    path: "{/controller,action}"
+    wildcard: args
+    defaults:
+      namespace: Slick\Users\Controller
+defaults:
+  namespace: Slick\Users\Controller
+  controller: pages
+  action: index

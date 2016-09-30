@@ -6,6 +6,7 @@
         "slick",
         "users"
     ],
+    "minimum-stability": "dev",
     "homepage": "https://github.com/slick/users",
     "license": "MIT",
     "authors": [
@@ -17,7 +18,8 @@
         }
     ],
     "require": {
-        "php" : ">=5.5"
+        "php": ">=5.5",
+        "slick/mvc": "^1.2"
     },
     "require-dev": {
         "phpunit/phpunit" : "~4.0",
@@ -40,7 +42,8 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0-dev"
+            "dev-master": "0.0-dev",
+            "dev-develop": "0.1-dev"
         }
     },
     "config": {
