@@ -1,0 +1,12 @@
+default:
+  suites:
+    all_features_suite:
+      contexts:
+        - FeatureContext
+        - Behat\MinkExtension\Context\MinkContext
+  extensions:
+    Behat\MinkExtension:
+      goutte: ~
+      selenium2: ~
+      base_url: http://0.0.0.0:8880
+      browser_name: chrome
