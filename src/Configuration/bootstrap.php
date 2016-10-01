@@ -7,7 +7,11 @@
  * file that was distributed with this source code.
  *
  * Application bootstrap script
- * @var \Slick\Mvc\Application $this
+ * @var \Slick\Mvc\Application $application
  */
 
+use \Slick\Users\Bootstrap;
+
 $config = \Slick\Configuration\Configuration::get('settings');
+
+Bootstrap::initialise($application)->addRoutes();

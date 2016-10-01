@@ -60,7 +60,7 @@ $services['url.rewrite.middleware'] = ObjectDefinition::create(UrlRewrite::class
 $services['router.middleware']      = ObjectDefinition::create(Router::class)
     ->setMethod(
         'setRouteFile',
-        [__DIR__.'/routes.yml']
+        [APP_PATH.'/src/Configuration/routes.yml']
     )
 ;
 $services['dispatcher.middleware']  = ObjectDefinition::create(Dispatcher::class);
