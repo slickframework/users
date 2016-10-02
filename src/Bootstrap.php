@@ -79,6 +79,14 @@ final class Bootstrap
         $map = $this->getRouterContainer()->getMap();
         $routes = $map->getRoutes();
         $map->setRoutes([]);
+        $map->post('signUp', '/sign-up')
+            ->defaults([
+                'namespace' => 'Slick\Users\Controller',
+                'controller' => 'accounts',
+                'action' => 'sign-up',
+            ])
+            ->allows(['GET'])
+        ;
         $map->attach('user.', '/user', function(Map $map) {
             $map->tokens([
                 'id'     => '\d+'

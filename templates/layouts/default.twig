@@ -23,6 +23,22 @@
             padding: 3rem 1.5rem;
             text-align: center;
         }
+        .required label:after {
+            content: ' *';
+            color: darkred;
+        }
+        .has-error label {
+            color: darkred;
+        }
+        .has-error .form-control {
+            border-color: darkred;
+        }
+
+        .has-error .help-block {
+            color: darkred;
+            font-size: 85%;
+            padding: 4px 0 0 8px;
+        }
     </style>
 </head>
 

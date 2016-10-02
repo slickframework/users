@@ -22,6 +22,8 @@ use Slick\Users\Shared\Domain\AbstractEntity;
  * @property string  $email
  * @property string  $password
  * @property Account $account
+ *
+ * @adapter slickUsers
  */
 class Credential extends AbstractEntity
 {

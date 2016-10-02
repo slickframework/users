@@ -16,6 +16,19 @@ $settings = [
 ];
 
 // ------------------------------------
+//  Database access settings
+// ------------------------------------
+$settings['users-db'] = [
+    'driver' => \Slick\Database\Adapter::DRIVER_MYSQL,
+    'options' => [
+        'host' => 'localhost',
+        'database' => 'slick_users',
+        'username' => 'root',
+        'password' => '',
+    ]
+];
+
+// ------------------------------------
 //  Twig templates configuration
 // ------------------------------------
 $settings['template'] = [

@@ -27,6 +27,8 @@ use Slick\Users\Tests\Shared\Domain\AuditAwareEntity;
  *
  * @method bool isActive()
  * @method bool isConfirmed()
+ *
+ * @adapter slickUsers
  */
 class Account extends AuditAwareEntity
 {

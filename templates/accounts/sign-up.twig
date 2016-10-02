@@ -1,0 +1,9 @@
+{% extends 'layouts/default.twig' %}
+
+{% block mainView %}
+    <h1>{{ translate('Sign up') }}</h1>
+    <hr>
+    <div class="registration-form-wrapper">
+        {{ form.render|raw }}
+    </div>
+{% endblock %}

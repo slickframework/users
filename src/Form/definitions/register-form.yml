@@ -1,0 +1,34 @@
+id: account-register
+class: Slick\Mvc\Form\EntityForm
+elements:
+  name:
+    type: text
+    label: Your name
+    filters:
+      - text
+  email:
+    type: text
+    label: E-mail address
+    validates:
+      notEmpty: E-mail address is mandatory for account registration, otherwise how can we contact you?
+      email: It seems that this is not a valid e-mail address.
+    filters:
+      - Slick\Users\Shared\Filter\Email
+  password:
+    type: password
+    label: Password
+    validates:
+      notEmpty: Please specify a password to your acount
+  confirmPassword:
+    type: password
+    label: Confirm your password
+    validates:
+      Slick\Users\Shared\Validator\PasswordMatch: "The password don't match."
+  buttonGroup:
+    type: fieldset
+    elements:
+      submit:
+        type: submit
+        value: Sign up
+        attributes:
+          class: btn btn-primary

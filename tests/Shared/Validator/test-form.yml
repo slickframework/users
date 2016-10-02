@@ -1,0 +1,7 @@
+id: test-register
+class: Slick\Mvc\Form\EntityForm
+elements:
+  password:
+    type: password
+  confirmPassword:
+    type: password

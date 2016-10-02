@@ -10,8 +10,20 @@
  * @var \Slick\Mvc\Application $application
  */
 
-use \Slick\Users\Bootstrap;
+use Slick\Database\Adapter;
+use Slick\Orm\Orm;
+use Slick\Users\Bootstrap;
 
 $config = \Slick\Configuration\Configuration::get('settings');
 
 Bootstrap::initialise($application)->addRoutes();
+
+$dbSettings = $config->get(
+    'users-db',
+    [
+        'driver' => Adapter::DRIVER_SQLITE,
+        'options' => ['file' => ':memory:']
+    ]
+);
+$adapter = (new Adapter($dbSettings))->initialize();
+Orm::getInstance()->setAdapter('slickUsers', $adapter);
