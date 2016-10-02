@@ -13,6 +13,9 @@ use Aura\Router\Map;
 use Aura\Router\RouterContainer;
 use Slick\Mvc\Application;
 use Slick\Mvc\Router;
+use Slick\Orm\Event\Save;
+use Slick\Orm\Orm;
+use Slick\Users\Service\Domain\AuditEntitySaveListener;
 use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
 
 /**
@@ -34,6 +37,15 @@ final class Bootstrap
     private $routerContainer;
 
     /**
+     * @var Orm
+     */
+    private $orm;
+
+    private $listeners = [
+        AuditEntitySaveListener::class => Save::ACTION_BEFORE_UPDATE
+    ];
+
+    /**
      * Needed to load the router container
      */
     use DependencyContainerAwareMethods;
@@ -46,7 +58,8 @@ final class Bootstrap
     private function __construct(Application $application)
     {
         $this->application = $application;
-        $application->getContainer();
+        $application->getContainer(); // To initialize the main application container
+        $this->registerListeners();
     }
 
     /**
@@ -139,6 +152,33 @@ final class Bootstrap
     }
 
     /**
+     * Gets ORM factory
+     *
+     * @return Orm
+     */
+    public function getOrm()
+    {
+        if (!$this->orm) {
+            $this->setOrm(Orm::getInstance());
+        }
+        return $this->orm;
+    }
+
+    /**
+     * Sets ORM factory
+     *
+     * @param Orm $orm
+     *
+     * @return Bootstrap
+     */
+    public function setOrm(Orm $orm)
+    {
+        $this->orm = $orm;
+        return $this;
+    }
+
+
+    /**
      * Load router container from application router
      *
      * @return RouterContainer
@@ -150,4 +190,16 @@ final class Bootstrap
         return $router->getRouterContainer();
     }
 
+    /**
+     * Adds the list of listeners to the ORM emitter
+     */
+    private function registerListeners()
+    {
+        foreach ($this->listeners as $class => $eventName) {
+            $this->getOrm()
+                ->getListenersProvider()
+                ->addListener($eventName, new $class)
+            ;
+        }
+    }
 }
