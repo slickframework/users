@@ -55,7 +55,7 @@ class BootstrapTest extends TestCase
             ->setRouterContainer($routerContainer)
             ->addRoutes();
         $route = $routerContainer->getMap()->getRoute('user.browse');
-        $this->assertEquals('users', $route->path);
+        $this->assertEquals('/users', $route->path);
     }
 
     /**
