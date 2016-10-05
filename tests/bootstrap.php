@@ -12,6 +12,8 @@ $autoLoader = include dirname(__DIR__).'/vendor/autoload.php';
 
 define('APP_PATH', dirname(__DIR__));
 
+Phake::setClient(Phake::CLIENT_PHPUNIT);
+
 $application = new \Slick\Mvc\Application();
 $application->setConfigPath(APP_PATH.'/src/Configuration');
 

@@ -76,17 +76,18 @@ class Accounts extends Controller implements DependencyContainerAwareInterface
      * Calls registration service
      *
      * @param EntityForm $form
+     *
+     * @return self|$this
      */
     protected function registerAccount(EntityForm $form)
     {
         if (!$form->isValid()) {
-            $this->addErrorMessage(
+            return $this->addErrorMessage(
                 $this->translate(
                     'Unable to create new account. Please check the errors ' .
                     'bellow and try again.'
                 )
             );
-            return;
         }
         $data = $this->getRegisterForm()->getData();
         $request = new Register\RegisterRequest(
@@ -100,6 +101,7 @@ class Accounts extends Controller implements DependencyContainerAwareInterface
                 "Sign up completed successfully."
             )
         );
+        return $this;
     }
 
     /**
