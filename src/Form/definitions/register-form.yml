@@ -12,6 +12,7 @@ elements:
     validates:
       notEmpty: E-mail address is mandatory for account registration, otherwise how can we contact you?
       email: It seems that this is not a valid e-mail address.
+      Slick\Users\Shared\Validator\UniqueEmail: There is already an account with this email address. Did you forgot your password?
     filters:
       - Slick\Users\Shared\Filter\Email
   password:

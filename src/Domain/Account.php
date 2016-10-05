@@ -59,7 +59,7 @@ class Account extends AuditAwareEntity
      * @Orm\Column type=boolean
      * @var string
      */
-    protected $confirmed = false;
+    protected $confirmed = 0;
 
     /**
      * @readwrite

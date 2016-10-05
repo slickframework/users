@@ -17,6 +17,7 @@ use Slick\Mvc\Http\UrlRewrite;
 use Slick\Mvc\Renderer;
 use Slick\Mvc\Router;
 use Slick\Mvc\Http\Session;
+use Slick\Users\Service\Account\Register;
 
 /**
  * @var $this \Slick\Mvc\Application
@@ -28,6 +29,11 @@ $templatePath = $config->get('template.path');
  * Default DI services definitions
  */
 $services = [];
+
+// ------------------------------------
+// Default session driver
+// ------------------------------------
+$services['accountRegister'] = ObjectDefinition::create(Register::class);
 
 // ------------------------------------
 // Default session driver

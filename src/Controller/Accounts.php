@@ -14,6 +14,9 @@ use Slick\Mvc\Controller;
 use Slick\Mvc\Form\EntityForm;
 use Slick\Mvc\Http\FlashMessagesMethods;
 use Slick\Users\Form\UsersForms;
+use Slick\Users\Service\Account\Register;
+use Slick\Users\Shared\Di\DependencyContainerAwareInterface;
+use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
 
 /**
  * Users controller
@@ -21,17 +24,33 @@ use Slick\Users\Form\UsersForms;
  * @package Slick\Users\Controller
  * @author  Filipe Silva <silvam.filipe@gmail.com>
  */
-class Accounts extends Controller
+class Accounts extends Controller implements DependencyContainerAwareInterface
 {
 
+    /**
+     * To translate session messages
+     */
     use TranslateMethods;
 
+    /**
+     * For session message display
+     */
     use FlashMessagesMethods;
+
+    /**
+     * For dependency container aware interface implementation
+     */
+    use DependencyContainerAwareMethods;
 
     /**
      * @var EntityForm
      */
     protected $registerForm;
+
+    /**
+     * @var Register
+     */
+    protected $registerService;
 
     /**
      * Handle sign up registration pages
@@ -69,6 +88,18 @@ class Accounts extends Controller
             );
             return;
         }
+        $data = $this->getRegisterForm()->getData();
+        $request = new Register\RegisterRequest(
+            $data['email'],
+            $data['password'],
+            $data['name']
+        );
+        $this->getRegisterService()->execute($request);
+        $this->addSuccessMessage(
+            $this->translate(
+                "Sign up completed successfully."
+            )
+        );
     }
 
     /**
@@ -94,6 +125,34 @@ class Accounts extends Controller
     public function setRegisterForm(EntityForm $registerForm)
     {
         $this->registerForm = $registerForm;
+        return $this;
+    }
+
+    /**
+     * Gets registerService property
+     *
+     * @return Register
+     */
+    public function getRegisterService()
+    {
+        if (!$this->registerService) {
+            /** @var Register $service */
+            $service = $this->getContainer()->get('accountRegister');
+            $this->setRegisterService($service);
+        }
+        return $this->registerService;
+    }
+
+    /**
+     * Sets registerService property
+     *
+     * @param Register $registerService
+     *
+     * @return Accounts
+     */
+    public function setRegisterService(Register $registerService)
+    {
+        $this->registerService = $registerService;
         return $this;
     }
 
