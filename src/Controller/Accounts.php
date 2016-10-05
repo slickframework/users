@@ -9,6 +9,7 @@
 
 namespace Slick\Users\Controller;
 
+use Psr\Log\LoggerInterface;
 use Slick\I18n\TranslateMethods;
 use Slick\Mvc\Controller;
 use Slick\Mvc\Form\EntityForm;
@@ -43,6 +44,11 @@ class Accounts extends Controller implements DependencyContainerAwareInterface
     use DependencyContainerAwareMethods;
 
     /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * @var EntityForm
      */
     protected $registerForm;
@@ -67,6 +73,7 @@ class Accounts extends Controller implements DependencyContainerAwareInterface
                     .$caught->getMessage()
                 );
                 $this->addErrorMessage($message);
+                $this->getLogger()->error($message);
             }
         }
         $this->set(compact('form'));
@@ -101,7 +108,7 @@ class Accounts extends Controller implements DependencyContainerAwareInterface
                 "Sign up completed successfully."
             )
         );
-        return $this;
+        return $this->redirect('home');
     }
 
     /**
@@ -155,6 +162,34 @@ class Accounts extends Controller implements DependencyContainerAwareInterface
     public function setRegisterService(Register $registerService)
     {
         $this->registerService = $registerService;
+        return $this;
+    }
+
+    /**
+     * Gets logger property
+     *
+     * @return LoggerInterface
+     */
+    public function getLogger()
+    {
+        if (!$this->logger) {
+            /** @var LoggerInterface $logger */
+            $logger = $this->getContainer()->get('logger');
+            $this->setLogger($logger);
+        }
+        return $this->logger;
+    }
+
+    /**
+     * Sets logger property
+     *
+     * @param LoggerInterface $logger
+     *
+     * @return Accounts
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
         return $this;
     }
 

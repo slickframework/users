@@ -11,6 +11,7 @@ namespace Slick\Users\Tests\Service\Account;
 
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 use PHPUnit_Framework_TestCase as TestCase;
+use Psr\Log\LoggerInterface;
 use Slick\Users\Domain\Account;
 use Slick\Users\Domain\Credential;
 use Slick\Users\Service\Account\Register;
@@ -53,7 +54,8 @@ class RegisterTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->service = new Register();
+        $logger = \Phake::mock(LoggerInterface::class);
+        $this->service = new Register($logger);
         $this->request = new Register\RegisterRequest(
             $this->postData['email'],
             $this->postData['password'],

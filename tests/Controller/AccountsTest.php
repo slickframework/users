@@ -10,6 +10,8 @@
 namespace Slick\Users\Tests\Controller;
 
 use Interop\Container\ContainerInterface;
+use Slick\Http\PhpEnvironment\Request;
+use Slick\Http\PhpEnvironment\Response;
 use Slick\Mvc\Form\EntityForm;
 use Slick\Users\Controller\Accounts;
 use Slick\Users\Service\Account\Register;
@@ -35,6 +37,9 @@ class AccountsTest extends ControllerTestCase
     {
         parent::setUp();
         $this->controller = new Accounts();
+        $request = \Phake::mock(Request::class);
+        $response = new Response();
+        $this->controller->register($request, $response);
     }
 
     /**

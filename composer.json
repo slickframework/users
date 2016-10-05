@@ -19,6 +19,7 @@
     ],
     "require": {
         "php": ">=5.5",
+        "graylog2/gelf-php": "^1.5",
         "slick/mvc": "^1.2"
     },
     "require-dev": {

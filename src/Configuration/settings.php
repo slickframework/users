@@ -29,6 +29,16 @@ $settings['users-db'] = [
 ];
 
 // ------------------------------------
+//  Logging settings
+// ------------------------------------
+$settings['logging'] = [
+    'handler' => [
+        'name' => 'null',
+        'debug_level' => \Monolog\Logger::DEBUG
+    ]
+];
+
+// ------------------------------------
 //  Twig templates configuration
 // ------------------------------------
 $settings['template'] = [
