@@ -17,7 +17,7 @@ services:
       - mongo
       - elasticsearch
     ports:
-      - "9000:9000"
+      - "9002:9000"
 
   php:
     depends_on:

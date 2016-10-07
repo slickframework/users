@@ -10,6 +10,8 @@
 /** @var Composer\Autoload\ClassLoader $autoLoader */
 $autoLoader = include dirname(__DIR__).'/vendor/autoload.php';
 
+session_start();
+
 define('APP_PATH', dirname(__DIR__));
 
 Phake::setClient(Phake::CLIENT_PHPUNIT);
