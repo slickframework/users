@@ -14,6 +14,7 @@ use Slick\I18n\TranslateMethods;
 use Slick\Mvc\Controller;
 use Slick\Mvc\Form\EntityForm;
 use Slick\Mvc\Http\FlashMessagesMethods;
+use Slick\Users\Form\AccountRegisterForm;
 use Slick\Users\Form\UsersForms;
 use Slick\Users\Service\Account\Register;
 use Slick\Users\Shared\Di\DependencyContainerAwareInterface;
@@ -49,7 +50,7 @@ class Accounts extends Controller implements DependencyContainerAwareInterface
     protected $logger;
 
     /**
-     * @var EntityForm
+     * @var AccountRegisterForm
      */
     protected $registerForm;
 
@@ -96,12 +97,7 @@ class Accounts extends Controller implements DependencyContainerAwareInterface
                 )
             );
         }
-        $data = $this->getRegisterForm()->getData();
-        $request = new Register\RegisterRequest(
-            $data['email'],
-            $data['password'],
-            $data['name']
-        );
+        $request = $this->getRegisterForm()->getData();
         $this->getRegisterService()->execute($request);
         $this->addSuccessMessage(
             $this->translate(
@@ -114,7 +110,7 @@ class Accounts extends Controller implements DependencyContainerAwareInterface
     /**
      * Gets registerForm property
      *
-     * @return EntityForm
+     * @return AccountRegisterForm
      */
     public function getRegisterForm()
     {

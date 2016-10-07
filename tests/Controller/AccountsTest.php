@@ -98,12 +98,7 @@ class AccountsTest extends ControllerTestCase
      */
     public function registerAccount()
     {
-        $data = [
-            'name' => '',
-            'email' => 'jon.doe@example.com',
-            'password' => 'its-a-secret',
-            'confirmPassword' => 'its-a-secret'
-        ];
+        $data = new Register\RegisterRequest('jon.doe@example.com', '');
         $form = \Phake::mock(EntityForm::class);
         \Phake::when($form)->getData()->thenReturn($data);
         \Phake::when($form)->isValid()->thenReturn(true);
@@ -118,12 +113,7 @@ class AccountsTest extends ControllerTestCase
     public function testErrorOnRegisterService()
     {
 
-        $data = [
-            'name' => '',
-            'email' => 'jon.doe@example.com',
-            'password' => 'its-a-secret',
-            'confirmPassword' => 'its-a-secret'
-        ];
+        $data = new Register\RegisterRequest('jon.doe@example.com', '');
         $form = \Phake::mock(EntityForm::class);
         \Phake::when($form)->getData()->thenReturn($data);
         \Phake::when($form)->isValid()->thenReturn(true);
