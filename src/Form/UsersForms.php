@@ -25,7 +25,7 @@ final class UsersForms
     /**
      * Get account register form
      *
-     * @return EntityForm|FormInterface
+     * @return EntityForm|FormInterface|AccountRegisterForm
      */
     public static function getRegisterForm()
     {
