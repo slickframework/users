@@ -1,0 +1,27 @@
+{
+  "name": "slick-users",
+  "description": "User management, authentication and authorization web application.",
+  "main": "index.php",
+  "authors": [
+    "Slick Team"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "Users",
+    "Slickframeword",
+    "OAuth2"
+  ],
+  "homepage": "https://github.com/slickframework/users",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "font-awesome": "^4.6.3",
+    "bootstrap": "v4.0.0-alpha.4"
+  }
+}
