@@ -8,7 +8,7 @@
   "license": "MIT",
   "keywords": [
     "Users",
-    "Slickframeword",
+    "Slick framework",
     "OAuth2"
   ],
   "homepage": "https://github.com/slickframework/users",
@@ -20,7 +20,7 @@
     "test",
     "tests"
   ],
-  "devDependencies": {
+  "dependencies": {
     "font-awesome": "^4.6.3",
     "bootstrap": "v4.0.0-alpha.4"
   }

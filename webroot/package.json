@@ -21,13 +21,15 @@
     "url": "https://github.com/slickframework/users/issues"
   },
   "homepage": "https://github.com/slickframework/users#readme",
-  "devDependencies": {
+  "dependencies": {
     "bower": "^1.7.9",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^3.1.1",
     "gulp-bower": "0.0.13",
-    "gulp-main-bower-files": "^1.5.3",
     "gulp-sass": "^2.3.2",
     "gulp-sourcemaps": "^2.1.1"
+  },
+  "devDependencies": {
+    "sassdoc": "^2.1.20"
   }
 }

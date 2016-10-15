@@ -1,0 +1,27 @@
+/// State rules are ways to describe how our modules or layouts will look
+/// when in a particular state. Is it hidden or expanded? Is it active or
+/// inactive? They are about describing how a module or layout looks on
+/// screens that are smaller or bigger. They are also about describing how a
+/// module might look in different views like the home page or the inside page.
+
+.required {
+  label {
+    &:after {
+      content: ' *';
+      color: $has-error-state-color;
+    }
+  }
+}
+
+.has-error {
+  label, .help-block {
+    color: $has-error-state-color;
+  }
+  .form-control {
+    border-color: darkred;
+  }
+  .help-block {
+    font-size: 85%;
+    padding: 4px 0 0 8px;
+  }
+}
