@@ -1,3 +1,4 @@
+# Example to have an graylog2 server attach to the php container
 version: '2'
 services:
   mongo:
