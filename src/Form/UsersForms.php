@@ -31,4 +31,14 @@ final class UsersForms
     {
         return FormRegistry::getForm(__DIR__.'/definitions/register-form.yml');
     }
+
+    /**
+     * Get account login form
+     *
+     * @return FormInterface|EntityForm|LoginForm
+     */
+    public static function getLoginForm()
+    {
+        return FormRegistry::getForm(__DIR__.'/definitions/login-form.yml');
+    }
 }

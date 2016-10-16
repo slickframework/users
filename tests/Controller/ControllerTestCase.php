@@ -10,9 +10,11 @@
 namespace Slick\Users\Tests\Controller;
 
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
-use PHPUnit_Framework_TestCase as TestCase;
+use Slick\Http\PhpEnvironment\Request;
+use Slick\Http\PhpEnvironment\Response;
 use Slick\Mvc\Controller;
 use Slick\Mvc\Http\FlashMessages;
+use Slick\Users\Tests\TestCase;
 
 /**
  * ControllerTestCase
@@ -32,6 +34,15 @@ class ControllerTestCase extends TestCase
      * @var FlashMessages
      */
     protected $flashMessages;
+
+    /**
+     * Set the SUT controller object
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->controller->register(new Request(), new Response());
+    }
 
     /**
      * Asserts controller's view variables array is empty
@@ -89,6 +100,24 @@ class ControllerTestCase extends TestCase
         $this->flashMessages = $this->controller->getFlashMessages();
     }
 
+    /**
+     * Check if a view name is equals to expected
+     *
+     * @param string $expected
+     * @param string $message
+     */
+    protected function assertViewEquals($expected, $message = '')
+    {
+        $view = $this->controller->getRequest()->getAttribute('template', null);
+        $this->assertEquals($expected, $view, $message);
+    }
+
+    /**
+     * Assert that an error message was set in the flash messages
+     *
+     * @param $expected
+     * @param string $message
+     */
     protected function assertErrorFlashMessageMatch($expected, $message = '')
     {
         $message = $message === ''

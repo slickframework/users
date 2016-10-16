@@ -19,6 +19,8 @@ use Slick\Mvc\Http\UrlRewrite;
 use Slick\Mvc\Renderer;
 use Slick\Mvc\Router;
 use Slick\Mvc\Http\Session;
+use Slick\Users\Service\Account\AccountEventEmitter;
+use Slick\Users\Service\Account\Listener\AccountEventsProvider;
 use Slick\Users\Service\Account\Register;
 
 /**
@@ -35,8 +37,14 @@ $services = [];
 // ------------------------------------
 // Application services
 // ------------------------------------
+$services['accountEventsListenerProvider'] = ObjectDefinition::create(AccountEventsProvider::class);
 $services['accountRegister'] = ObjectDefinition::create(Register::class)
     ->setConstructArgs(['@logger']);
+$services['accountAuthentication'] = ObjectDefinition::create(\Slick\Users\Service\Account\Authentication::class)
+    ->setConstructArgs(['@logger']);
+$services['accountEventEmitter'] = ObjectDefinition::create(
+    AccountEventEmitter::class
+)->setMethod('useListenerProvider', ['@accountEventsListenerProvider']);
 
 $services['gelfValidator'] = ObjectDefinition::create(MessageValidator::class);
 $services['gelfTransport'] = ObjectDefinition::create(UdpTransport::class)

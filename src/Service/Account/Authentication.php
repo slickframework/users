@@ -9,10 +9,17 @@
 
 namespace Slick\Users\Service\Account;
 
+use League\Event\EmitterAwareInterface;
+use League\Event\EmitterInterface;
+use League\Event\ListenerProviderInterface;
+use Psr\Log\LoggerInterface;
 use Slick\Orm\Orm;
 use Slick\Orm\RepositoryInterface;
 use Slick\Users\Domain\Account;
 use Slick\Users\Domain\Credential;
+use Slick\Users\Service\Account\Event\SignIn;
+use Slick\Users\Shared\Di\DependencyContainerAwareInterface;
+use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
 
 /**
  * Authentication
@@ -20,8 +27,12 @@ use Slick\Users\Domain\Credential;
  * @package Slick\Users\Service\Account
  * @author  Filipe Silva <silvam.filipe@gmail.com>
  */
-class Authentication
+class Authentication implements
+    EmitterAwareInterface,
+    DependencyContainerAwareInterface
 {
+
+    const SESSION_KEY= 'sign-in-data';
 
     /**
      * @var Account
@@ -29,9 +40,34 @@ class Authentication
     protected $account;
 
     /**
+     * @var AccountEventEmitter|EmitterInterface
+     */
+    protected $emitter;
+
+    /**
      * @var RepositoryInterface
      */
     protected $repository;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * Needed to use dependency container
+     */
+    use DependencyContainerAwareMethods;
+
+    /**
+     * Register
+     *
+     * @param LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
 
     /**
      * Check if provided username and password is from a valid account
@@ -43,13 +79,25 @@ class Authentication
      */
     public function login($username, $password)
     {
-        $found = false;
         $credential = $this->getCredentialFor($username);
         if ($credential && $this->validate($credential, $password)) {
+            session_regenerate_id(true);
             $this->account = $credential->account;
-            $found = true;
+            $event = new SignIn($this->account);
+            $this->getEmitter()->emit($event);
+            $this->logger->info(
+                "User {$this->account} has successful signed in.",
+                $this->account->asArray()
+            );
+            return true;
         }
-        return $found;
+        $this->logger->info(
+            "Unsuccessful signed in attempt.",
+            [
+                'username' => $username
+            ]
+        );
+        return false;
     }
 
     /**
@@ -70,7 +118,7 @@ class Authentication
     public function getRepository()
     {
         if (!$this->repository) {
-            $this->setRepository(Orm::getRepository(Account::class));
+            $this->setRepository(Orm::getRepository(Credential::class));
         }
         return $this->repository;
     }
@@ -102,7 +150,8 @@ class Authentication
             ->find()
             ->where(
                 [
-                    'email = :username OR username = :username' => [
+                    'credentials.email = :username OR
+                     username = :username' => [
                         ':username' => $username
                     ]
                 ]
@@ -126,4 +175,31 @@ class Authentication
         return $encryptionService->match($credential->password);
     }
 
+    /**
+     * Set the Emitter.
+     *
+     * @param EmitterInterface $emitter
+     *
+     * @return $this
+     */
+    public function setEmitter(EmitterInterface $emitter = null)
+    {
+        $this->emitter = $emitter;
+        return $this;
+    }
+
+    /**
+     * Get the Emitter.
+     *
+     * @return EmitterInterface|AccountEventEmitter
+     */
+    public function getEmitter()
+    {
+        if (!$this->emitter) {
+            /** @var AccountEventEmitter $emitter */
+            $emitter = $this->getContainer()->get('accountEventEmitter');
+            $this->setEmitter($emitter);
+        }
+        return $this->emitter;
+    }
 }

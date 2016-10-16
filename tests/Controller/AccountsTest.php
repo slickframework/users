@@ -36,8 +36,8 @@ class AccountsTest extends ControllerTestCase
      */
     protected function setUp()
     {
-        parent::setUp();
         $this->controller = new Accounts();
+        parent::setUp();
         $request = \Phake::mock(Request::class);
         $response = new Response();
         $this->controller->register($request, $response);

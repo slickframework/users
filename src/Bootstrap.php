@@ -87,6 +87,14 @@ final class Bootstrap
             ])
             ->allows(['GET'])
         ;
+        $map->post('signIn', '/sign-in')
+            ->defaults([
+                'namespace' => 'Slick\Users\Controller',
+                'controller' => 'login',
+                'action' => 'sign-in',
+            ])
+            ->allows(['GET'])
+        ;
         $map->attach('user.', '/user', function(Map $map) {
             $map->tokens([
                 'id'     => '\d+'

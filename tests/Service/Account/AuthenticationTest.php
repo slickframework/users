@@ -10,6 +10,7 @@
 namespace Slick\Users\Tests\Service\Account;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use Psr\Log\LoggerInterface;
 use Slick\Orm\Repository\EntityRepository;
 use Slick\Orm\Repository\QueryObject\QueryObjectInterface;
 use Slick\Orm\RepositoryInterface;
@@ -17,6 +18,8 @@ use Slick\Users\Domain\Account;
 use Slick\Users\Domain\Credential;
 use Slick\Users\Service\Account\Authentication;
 use Slick\Users\Service\Account\PasswordEncryptionService;
+
+include 'functions.php';
 
 /**
  * Authentication Service Test Case
@@ -38,7 +41,8 @@ class AuthenticationTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->service = new Authentication();
+        $logger = \Phake::mock(LoggerInterface::class);
+        $this->service = new Authentication($logger);
     }
 
     /**
@@ -112,7 +116,8 @@ class AuthenticationTest extends TestCase
         $query = \Phake::mock(QueryObjectInterface::class);
         \Phake::when($query)->where(
             [
-                'email = :username OR username = :username' => [
+                'credentials.email = :username OR
+                     username = :username' => [
                     ':username' => $username
                 ]
             ]
