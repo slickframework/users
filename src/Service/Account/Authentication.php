@@ -11,7 +11,6 @@ namespace Slick\Users\Service\Account;
 
 use League\Event\EmitterAwareInterface;
 use League\Event\EmitterInterface;
-use League\Event\ListenerProviderInterface;
 use Psr\Log\LoggerInterface;
 use Slick\Orm\Orm;
 use Slick\Orm\RepositoryInterface;
