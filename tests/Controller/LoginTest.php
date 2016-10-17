@@ -107,4 +107,49 @@ class LoginTest extends ControllerTestCase
         \Phake::verify($auth)->login('foo', 'bar');
     }
 
+    /**
+     * @test
+     */
+    public function unsuccessfulLogin()
+    {
+        $form = \Phake::mock(LoginForm::class);
+        \Phake::when($form)->wasSubmitted()->thenReturn(true);
+        \Phake::when($form)->isValid()->thenReturn(true);
+        \Phake::when($form)->getData()->thenReturn(['username' => 'foo', 'password' => 'bar']);
+        $this->controller->setLoginForm($form);
+        $auth = \Phake::mock(Authentication::class);
+        \Phake::when($auth)->login('foo', 'bar')->thenReturn(false);
+        $dep = [
+            'accountAuthentication' => $auth
+        ];
+        $this->controller->setContainer($this->getContainerMock($dep));
+        $this->controller->signIn();
+        \Phake::verify($auth)->login('foo', 'bar');
+        $this->assertErrorFlashMessageMatch('Invalid credentials. Please try again.');
+    }
+
+    /**
+     * @test
+     */
+    public function errorWhenVerifyingLogin()
+    {
+        $form = \Phake::mock(LoginForm::class);
+        \Phake::when($form)->wasSubmitted()->thenReturn(true);
+        \Phake::when($form)->isValid()->thenReturn(true);
+        \Phake::when($form)->getData()->thenReturn(['username' => 'foo', 'password' => 'bar']);
+        $this->controller->setLoginForm($form);
+        $logger = \Phake::mock(LoggerInterface::class);
+
+        $auth = \Phake::mock(Authentication::class);
+        \Phake::when($auth)->login('foo', 'bar')->thenThrow(new \Exception('Error!'));
+        $dep = [
+            'accountAuthentication' => $auth,
+            'logger' => $logger
+        ];
+        $this->controller->setContainer($this->getContainerMock($dep));
+        $this->controller->signIn();
+        \Phake::verify($logger)->alert('Error signing in account.', ['error' => 'Error!']);
+        $this->assertErrorFlashMessageMatch('Error signing in.');
+    }
+
 }
