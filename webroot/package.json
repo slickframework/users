@@ -1,0 +1,35 @@
+{
+  "name": "slick-users",
+  "version": "1.0.0",
+  "description": "User management, authentication and authorization web application.",
+  "main": "index.php",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/slickframework/users.git"
+  },
+  "keywords": [
+    "Users",
+    "Slickframeword",
+    "OAuth2"
+  ],
+  "author": "Slick Team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/slickframework/users/issues"
+  },
+  "homepage": "https://github.com/slickframework/users#readme",
+  "dependencies": {
+    "bower": "^1.7.9",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.1",
+    "gulp-bower": "0.0.13",
+    "gulp-sass": "^2.3.2",
+    "gulp-sourcemaps": "^2.1.1"
+  },
+  "devDependencies": {
+    "sassdoc": "^2.1.20"
+  }
+}

@@ -10,6 +10,9 @@
 namespace Slick\Users\Tests\Controller;
 
 use Interop\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
+use Slick\Http\PhpEnvironment\Request;
+use Slick\Http\PhpEnvironment\Response;
 use Slick\Mvc\Form\EntityForm;
 use Slick\Users\Controller\Accounts;
 use Slick\Users\Service\Account\Register;
@@ -33,8 +36,11 @@ class AccountsTest extends ControllerTestCase
      */
     protected function setUp()
     {
-        parent::setUp();
         $this->controller = new Accounts();
+        parent::setUp();
+        $request = \Phake::mock(Request::class);
+        $response = new Response();
+        $this->controller->register($request, $response);
     }
 
     /**
@@ -92,12 +98,7 @@ class AccountsTest extends ControllerTestCase
      */
     public function registerAccount()
     {
-        $data = [
-            'name' => '',
-            'email' => 'jon.doe@example.com',
-            'password' => 'its-a-secret',
-            'confirmPassword' => 'its-a-secret'
-        ];
+        $data = new Register\RegisterRequest('jon.doe@example.com', '');
         $form = \Phake::mock(EntityForm::class);
         \Phake::when($form)->getData()->thenReturn($data);
         \Phake::when($form)->isValid()->thenReturn(true);
@@ -107,5 +108,44 @@ class AccountsTest extends ControllerTestCase
         $this->controller->setRegisterService($service);
         $this->controller->signUp();
         \Phake::verify($service)->execute($this->isInstanceOf(Register\RegisterRequest::class));
+    }
+
+    public function testErrorOnRegisterService()
+    {
+
+        $data = new Register\RegisterRequest('jon.doe@example.com', '');
+        $form = \Phake::mock(EntityForm::class);
+        \Phake::when($form)->getData()->thenReturn($data);
+        \Phake::when($form)->isValid()->thenReturn(true);
+        \Phake::when($form)->wasSubmitted()->thenReturn(true);
+        $this->controller->setRegisterForm($form);
+
+        $logger = \Phake::mock(LoggerInterface::class);
+        $this->controller->setLogger($logger);
+
+        $errorService = \Phake::mock(Register::class);
+        \Phake::when($errorService)
+            ->execute($this->isInstanceOf(Register\RegisterRequest::class))
+            ->thenThrow(new \Exception("Error"));
+        $this->controller->setRegisterService($errorService);
+        $this->controller->signUp();
+
+        \Phake::verify($logger)->error($this->isType('string'));
+        $this->assertErrorFlashMessageMatch(
+            'Error when trying to register a new account: Error'
+        );
+    }
+
+    /**
+     * Should get the logger from dependency injection service
+     * @test
+     */
+    public function getLogger()
+    {
+        $logger = \Phake::mock(LoggerInterface::class);
+        $container = \Phake::mock(ContainerInterface::class);
+        \Phake::when($container)->get('logger')->thenReturn($logger);
+        $this->controller->setContainer($container);
+        $this->assertSame($logger, $this->controller->getLogger());
     }
 }

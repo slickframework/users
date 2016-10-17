@@ -9,6 +9,7 @@
 
 namespace Slick\Users\Service\Account;
 
+use Psr\Log\LoggerInterface;
 use Slick\Common\Base;
 use Slick\Users\Domain\Account;
 use Slick\Users\Domain\Credential;
@@ -46,6 +47,22 @@ class Register extends Base
     protected $credential;
 
     /**
+     * @write
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * Register
+     *
+     * @param LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger)
+    {
+        parent::__construct(['logger' => $logger]);
+    }
+
+    /**
      * Registers the new user account
      *
      * @param RegisterRequest $registerRequest
@@ -57,6 +74,10 @@ class Register extends Base
         $account->save();
         $credential = $this->getCredential();
         $credential->account = $account;
+        $this->logger->info(
+            'New account created.',
+            ['e-mail' => $account->email]
+        );
         $credential->save();
     }
 

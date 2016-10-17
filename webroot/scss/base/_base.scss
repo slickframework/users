@@ -1,0 +1,23 @@
+///
+/// Base styles include setting heading sizes, default link styles, default
+/// font styles, and body backgrounds. There should be no need to use
+/// !important in a Base style.
+///
+/// @author Filipe Silva
+///
+
+@import "mixins";
+
+// Reset and dependencies
+@import "../vendors/bootstrap/normalize";
+@import "../vendors/bootstrap/print";
+
+// Core CSS
+@import "../vendors/bootstrap/reboot";
+@import "../vendors/bootstrap/type";
+@import "../vendors/bootstrap/images";
+@import "../vendors/bootstrap/code";
+@import "../vendors/bootstrap/grid";
+@import "../vendors/bootstrap/tables";
+@import "../vendors/bootstrap/forms";
+@import "../vendors/bootstrap/buttons";

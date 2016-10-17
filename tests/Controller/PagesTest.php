@@ -28,8 +28,8 @@ class PagesTest extends ControllerTestCase
      */
     protected function setUp()
     {
-        parent::setUp();
         $this->controller = new Pages();
+        parent::setUp();
     }
 
     /**

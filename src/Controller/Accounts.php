@@ -9,10 +9,12 @@
 
 namespace Slick\Users\Controller;
 
+use Psr\Log\LoggerInterface;
 use Slick\I18n\TranslateMethods;
 use Slick\Mvc\Controller;
 use Slick\Mvc\Form\EntityForm;
 use Slick\Mvc\Http\FlashMessagesMethods;
+use Slick\Users\Form\AccountRegisterForm;
 use Slick\Users\Form\UsersForms;
 use Slick\Users\Service\Account\Register;
 use Slick\Users\Shared\Di\DependencyContainerAwareInterface;
@@ -43,7 +45,12 @@ class Accounts extends Controller implements DependencyContainerAwareInterface
     use DependencyContainerAwareMethods;
 
     /**
-     * @var EntityForm
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * @var AccountRegisterForm
      */
     protected $registerForm;
 
@@ -67,6 +74,7 @@ class Accounts extends Controller implements DependencyContainerAwareInterface
                     .$caught->getMessage()
                 );
                 $this->addErrorMessage($message);
+                $this->getLogger()->error($message);
             }
         }
         $this->set(compact('form'));
@@ -89,25 +97,20 @@ class Accounts extends Controller implements DependencyContainerAwareInterface
                 )
             );
         }
-        $data = $this->getRegisterForm()->getData();
-        $request = new Register\RegisterRequest(
-            $data['email'],
-            $data['password'],
-            $data['name']
-        );
+        $request = $this->getRegisterForm()->getData();
         $this->getRegisterService()->execute($request);
         $this->addSuccessMessage(
             $this->translate(
                 "Sign up completed successfully."
             )
         );
-        return $this;
+        return $this->redirect('home');
     }
 
     /**
      * Gets registerForm property
      *
-     * @return EntityForm
+     * @return AccountRegisterForm
      */
     public function getRegisterForm()
     {
@@ -155,6 +158,34 @@ class Accounts extends Controller implements DependencyContainerAwareInterface
     public function setRegisterService(Register $registerService)
     {
         $this->registerService = $registerService;
+        return $this;
+    }
+
+    /**
+     * Gets logger property
+     *
+     * @return LoggerInterface
+     */
+    public function getLogger()
+    {
+        if (!$this->logger) {
+            /** @var LoggerInterface $logger */
+            $logger = $this->getContainer()->get('logger');
+            $this->setLogger($logger);
+        }
+        return $this->logger;
+    }
+
+    /**
+     * Sets logger property
+     *
+     * @param LoggerInterface $logger
+     *
+     * @return Accounts
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
         return $this;
     }
 

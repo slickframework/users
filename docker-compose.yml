@@ -29,5 +29,11 @@ services:
     volumes:
       - ./:/usr/src/app
     working_dir: /usr/src/app
-    links:
-      - db:database
+    depends_on:
+      - db
+
+  gulp:
+    image: helder/node
+    volumes:
+      - ./webroot:/data
+    command: /bin/true

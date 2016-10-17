@@ -1,5 +1,5 @@
 id: account-register
-class: Slick\Mvc\Form\EntityForm
+class: Slick\Users\Form\AccountRegisterForm
 elements:
   name:
     type: text

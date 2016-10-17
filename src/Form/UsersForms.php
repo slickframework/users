@@ -25,10 +25,20 @@ final class UsersForms
     /**
      * Get account register form
      *
-     * @return EntityForm|FormInterface
+     * @return EntityForm|FormInterface|AccountRegisterForm
      */
     public static function getRegisterForm()
     {
         return FormRegistry::getForm(__DIR__.'/definitions/register-form.yml');
+    }
+
+    /**
+     * Get account login form
+     *
+     * @return FormInterface|EntityForm|LoginForm
+     */
+    public static function getLoginForm()
+    {
+        return FormRegistry::getForm(__DIR__.'/definitions/login-form.yml');
     }
 }

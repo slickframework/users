@@ -15,8 +15,10 @@ use Slick\Mvc\Application;
 use Slick\Mvc\Router;
 use Slick\Orm\Event\Save;
 use Slick\Orm\Orm;
+use Slick\Template\Template;
 use Slick\Users\Service\Domain\AuditEntitySaveListener;
 use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
+use Slick\Users\Template\Extension\Authentication;
 
 /**
  * Bootstrap slick/users package
@@ -60,6 +62,7 @@ final class Bootstrap
         $this->application = $application;
         $application->getContainer(); // To initialize the main application container
         $this->registerListeners();
+        Template::register(Authentication::class);
     }
 
     /**
@@ -84,6 +87,14 @@ final class Bootstrap
                 'namespace' => 'Slick\Users\Controller',
                 'controller' => 'accounts',
                 'action' => 'sign-up',
+            ])
+            ->allows(['GET'])
+        ;
+        $map->post('signIn', '/sign-in')
+            ->defaults([
+                'namespace' => 'Slick\Users\Controller',
+                'controller' => 'login',
+                'action' => 'sign-in',
             ])
             ->allows(['GET'])
         ;

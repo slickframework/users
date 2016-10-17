@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+use Gelf\Transport\UdpTransport;
+use Gelf\MessageValidator;
 use Slick\Configuration\Configuration;
 use Slick\Di\Definition\ObjectDefinition;
 use Slick\Http\PhpEnvironment\Request;
@@ -17,6 +19,8 @@ use Slick\Mvc\Http\UrlRewrite;
 use Slick\Mvc\Renderer;
 use Slick\Mvc\Router;
 use Slick\Mvc\Http\Session;
+use Slick\Users\Service\Account\AccountEventEmitter;
+use Slick\Users\Service\Account\Listener\AccountEventsProvider;
 use Slick\Users\Service\Account\Register;
 
 /**
@@ -31,9 +35,44 @@ $templatePath = $config->get('template.path');
 $services = [];
 
 // ------------------------------------
-// Default session driver
+// Application services
 // ------------------------------------
-$services['accountRegister'] = ObjectDefinition::create(Register::class);
+$services['authentication'] = ObjectDefinition::create(\Slick\Users\Service\Authentication::class);
+$services['accountEventsListenerProvider'] = ObjectDefinition::create(AccountEventsProvider::class);
+$services['accountRegister'] = ObjectDefinition::create(Register::class)
+    ->setConstructArgs(['@logger']);
+$services['accountAuthentication'] = ObjectDefinition::create(\Slick\Users\Service\Account\Authentication::class)
+    ->setConstructArgs(['@logger']);
+$services['accountEventEmitter'] = ObjectDefinition::create(
+    AccountEventEmitter::class
+)->setMethod('useListenerProvider', ['@accountEventsListenerProvider']);
+
+$services['gelfValidator'] = ObjectDefinition::create(MessageValidator::class);
+$services['gelfTransport'] = ObjectDefinition::create(UdpTransport::class)
+    ->setConstructArgs(
+        [
+            $config->get('logging.graylog.hostname', 'graylog'),
+            $config->get('logging.graylog.port', 12201)
+        ]
+    )
+;
+$services['gelfPublisher'] = ObjectDefinition::create(\Gelf\Publisher::class)
+    ->setConstructArgs(['@gelfTransport', '@gelfValidator']);
+
+$services['defaultHandler'] = $config->get('logging.handler.name', 'gelf') == 'gelf'
+    ? ObjectDefinition::create(\Monolog\Handler\GelfHandler::class)
+        ->setConstructArgs(
+            [
+                '@gelfPublisher',
+                $config->get('logging.handler.debug_level', 100)
+            ]
+        )
+    : ObjectDefinition::create(\Slick\Common\Log\Handler\NullHandler::class);
+
+
+$services['logger'] = function () {
+    return \Slick\Users\Service\Logging::logger();
+};
 
 // ------------------------------------
 // Default session driver
