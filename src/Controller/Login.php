@@ -13,9 +13,12 @@ use Psr\Log\LoggerInterface;
 use Slick\I18n\TranslateMethods;
 use Slick\Mvc\Controller;
 use Slick\Mvc\Http\FlashMessagesMethods;
+use Slick\Mvc\Http\SessionAwareInterface;
+use Slick\Mvc\Http\SessionAwareMethods;
 use Slick\Users\Form\LoginForm;
 use Slick\Users\Form\UsersForms;
 use Slick\Users\Service\Account\Authentication;
+use Slick\Users\Service\Http\AuthenticationMiddleware;
 use Slick\Users\Shared\Di\DependencyContainerAwareInterface;
 use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
 
@@ -25,7 +28,9 @@ use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
  * @package Slick\Users\Controller
  * @author  Filipe Silva <silvam.filipe@gmail.com>
  */
-class Login extends Controller implements DependencyContainerAwareInterface
+class Login extends Controller implements
+    DependencyContainerAwareInterface,
+    SessionAwareInterface
 {
 
     /**
@@ -57,6 +62,11 @@ class Login extends Controller implements DependencyContainerAwareInterface
      * Needed to translate flash messages
      */
     use TranslateMethods;
+
+    /**
+     * To use session
+     */
+    use SessionAwareMethods;
 
     /**
      * Gets loginForm property
@@ -166,7 +176,16 @@ class Login extends Controller implements DependencyContainerAwareInterface
                 $this->getAuthenticationService()
                     ->login($data['username'], $data['password']);
             if ($valid) {
-                // TODO: do a better redirect after login
+                $page = $this->getSessionDriver()
+                    ->get(
+                        AuthenticationMiddleware::REDIRECT_KEY,
+                        $this->getUrl('home')
+                    )
+                ;
+                $page = ltrim($page, '/');
+                $this->getSessionDriver()
+                    ->erase(AuthenticationMiddleware::REDIRECT_KEY);
+                $this->redirect($page);
                 return;
             }
         } catch (\Exception $caught) {

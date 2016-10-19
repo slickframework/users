@@ -6,12 +6,14 @@ routes:
     defaults:
       controller: pages
       action: home
+    auth: true
   catchall:
     allows: [POST, GET]
     path: "{/controller,action}"
     wildcard: args
     defaults:
       namespace: Slick\Users\Controller
+    auth: false
 defaults:
   namespace: Slick\Users\Controller
   controller: pages

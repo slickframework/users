@@ -22,7 +22,9 @@
         {% include 'elements/sidebar.twig' %}
     {% endif %}
     <header>
-        {% include 'elements/navigation.twig' %}
+        {% block navigation %}
+            {% include 'elements/navigation.twig' %}
+        {% endblock %}
     </header>
 
         <main class="container">

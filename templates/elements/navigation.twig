@@ -12,5 +12,13 @@
         {{ translate('Users') }}
     </a>
     {% endblock %}
+    {% block navbar_actions_menu %}
+        {% if authentication.isGuest() %}
+            <div class="pull-right ">
+            <span>{{ translate('Already have an account?') }}</span>
+            <a href="{{ url('sign-in') }}" class="btn btn-primary">{{ translate('Sign in') }}</a>
+            </div>
+        {% endif %}
+    {% endblock %}
 
 </nav>

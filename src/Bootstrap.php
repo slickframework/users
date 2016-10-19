@@ -89,6 +89,7 @@ final class Bootstrap
                 'action' => 'sign-up',
             ])
             ->allows(['GET'])
+            ->auth(false)
         ;
         $map->post('signIn', '/sign-in')
             ->defaults([
@@ -97,6 +98,7 @@ final class Bootstrap
                 'action' => 'sign-in',
             ])
             ->allows(['GET'])
+            ->auth(false)
         ;
         $map->post('logout', '/sign-out')
             ->defaults([
@@ -105,6 +107,7 @@ final class Bootstrap
                 'action' => 'handle',
             ])
             ->allows(['GET'])
+            ->auth(false)
         ;
         $map->attach('user.', '/user', function(Map $map) {
             $map->tokens([
@@ -116,36 +119,39 @@ final class Bootstrap
                     'namespace' => 'Slick\Users\Controller',
                     'controller' => 'users',
                     'action' => 'index',
-                ]);
+                ])
+                ->auth(true);
             $map->get('read', '/{id}')
                 ->defaults([
                     'namespace' => 'Slick\Users\Controller',
                     'controller' => 'users',
                     'action' => 'show',
-                ]);
+                ])
+                ->auth(true);
             $map->post('edit', '/{id}/edit')
                 ->allows(['PATCH', 'PUT', 'GET'])
                 ->defaults([
                     'namespace' => 'Slick\Users\Controller',
                     'controller' => 'users',
                     'action' => 'edit',
-                ]);
+                ])
+                ->auth(true);
             $map->post('add', '')
-                ->allows(['GET'])
+                ->allows(['GET', 'PUT', 'POST'])
                 ->defaults([
                     'namespace' => 'Slick\Users\Controller',
                     'controller' => 'users',
                     'action' => 'add',
-                ]);
+                ])
+                ->auth(true);
             $map->post('delete', '/{id}/delete')
                 ->allows(['GET', 'DELETE'])
                 ->defaults([
                     'namespace' => 'Slick\Users\Controller',
                     'controller' => 'users',
                     'action' => 'delete',
-                ]);
-
-
+                ])
+                ->auth(true);
 
         });
         $routes = array_merge($map->getRoutes(), $routes);
