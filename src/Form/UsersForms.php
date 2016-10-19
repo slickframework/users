@@ -41,4 +41,16 @@ final class UsersForms
     {
         return FormRegistry::getForm(__DIR__.'/definitions/login-form.yml');
     }
+
+    /**
+     * Get profile form
+     *
+     * @return ProfileFormInterface|ProfileForm
+     */
+    public static function getProfileForm()
+    {
+        /** @var ProfileFormInterface $form */
+        $form = FormRegistry::getForm(__DIR__.'/definitions/profile-form.yml');
+        return $form;
+    }
 }

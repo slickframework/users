@@ -55,6 +55,26 @@ class ControllerTestCase extends TestCase
     }
 
     /**
+     * Asserts that controller has a variable that references a provided object
+     *
+     * @param mixed  $expected
+     * @param string $name
+     * @param string $message
+     */
+    public function assertVarSame($expected, $name, $message = '')
+    {
+        $this->assertTrue(
+            array_key_exists($name, $this->controller->getViewVars()),
+            'Controller does not have a view variable named '.$name
+        );
+        $this->assertSame(
+            $expected,
+            $this->controller->getViewVars()[$name],
+            $message
+        );
+    }
+
+    /**
      * Get a mock object for provided class name
      *
      * @param $className

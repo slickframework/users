@@ -1,0 +1,27 @@
+id: profile-form
+class: Slick\Users\Form\ProfileForm
+elements:
+  name:
+    type: text
+    label: Name
+    filters:
+      - text
+  email:
+    type: text
+    label: Public e-mail address
+    validates:
+      notEmpty: We need to send e-mail messages to you. You cannot leave the e-mail address empty.
+      email: It seams that this is not a valid e-mail address. Maybe its a type or somethig missing in it.
+    filters:
+      - Slick\Users\Shared\Filter\Email
+  id:
+    type: hidden
+
+  buttonGroup:
+    type: fieldset
+    elements:
+      submit:
+        type: submit
+        value: Update profile
+        attributes:
+          class: btn btn-primary

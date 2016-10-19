@@ -1,0 +1,9 @@
+{% extends 'layouts/default.twig' %}
+
+{% block mainView %}
+    <div class="card card-block">
+        <h4 class="card-title">{{ translate('Public profile') }}</h4>
+        {{ profileForm|raw }}
+    </div>
+
+{% endblock %}

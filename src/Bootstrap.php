@@ -109,6 +109,14 @@ final class Bootstrap
             ->allows(['GET'])
             ->auth(false)
         ;
+        $map->post('profile', '/profile')
+            ->defaults([
+                'namespace' => 'Slick\Users\Controller',
+                'controller' => 'profile',
+            ])
+            ->allows(['GET', 'POST'])
+            ->auth(true)
+        ;
         $map->attach('user.', '/user', function(Map $map) {
             $map->tokens([
                 'id'     => '\d+'
