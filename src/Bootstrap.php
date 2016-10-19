@@ -98,6 +98,14 @@ final class Bootstrap
             ])
             ->allows(['GET'])
         ;
+        $map->post('logout', '/sign-out')
+            ->defaults([
+                'namespace' => 'Slick\Users\Controller',
+                'controller' => 'signOut',
+                'action' => 'handle',
+            ])
+            ->allows(['GET'])
+        ;
         $map->attach('user.', '/user', function(Map $map) {
             $map->tokens([
                 'id'     => '\d+'

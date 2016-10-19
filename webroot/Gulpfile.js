@@ -57,6 +57,13 @@ gulp.task('bootstrap-sass', ['bower'], function () {
         .pipe(gulp.dest(settings.sass.vendor+'/bootstrap'));
 });
 
+gulp.task('font-awesome', ['bower'], function () {
+    gulp.src(settings.bower+'/font-awesome/fonts/**/*.*')
+        .pipe(gulp.dest('./fonts'));
+    gulp.src(settings.bower+'/font-awesome/scss/**/*.scss')
+        .pipe(gulp.dest('./scss/vendors/font-awesome'));
+});
+
 // Compiling sass
 gulp.task('sass', function () {
     return gulp
@@ -88,7 +95,7 @@ gulp.task('bower', function() {
 });
 
 // update bower dependencies
-gulp.task('update', ['javascript', 'bootstrap-sass']);
+gulp.task('update', ['javascript', 'bootstrap-sass', 'font-awesome']);
 
 // Default task
 gulp.task('default', ['update', 'sass']);

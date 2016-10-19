@@ -1,26 +1,16 @@
 <nav class="navbar navbar-fixed-top navbar-dark bg-inverse">
+    <a class="navbar-brand" href="#">
+        <button class="navbar-toggler" type="button" data-toggle="sidebar-toggle" aria-expanded="false" aria-label="Toggle navigation">
+            &#9776;
+        </button>
+    </a>
     {% block navbar_menu %}
-    <a class="navbar-brand" href="{{ url('home') }}">
+    <a class="navbar-brand logo" href="{{ url('home') }}">
         <img src="{{ url('../img/users-icon.png') }}" align="{{ translate('Users icon') }}">
     </a>
     <a class="navbar-brand" href="{{ url('home') }}">
         {{ translate('Users') }}
     </a>
-    <ul class="nav navbar-nav">
-        <li class="nav-item active">
-            <a class="nav-link" href="{{ url('home') }}">
-                <i class="fa fa-dashboard"></i>
-                {{ translate('Dashboard') }}
-                <span class="sr-only">{{ translate('(current)') }}</span>
-            </a>
-        </li>
-    </ul>
-        <ul class="nav navbar-nav pull-xs-right">
-            <li class="nav-iem">
-                <a href="{{ url('home') }}" class="nav-link">
-                    {{ authentication.currentAccount.name }}
-                </a>
-            </li>
-        </ul>
     {% endblock %}
+
 </nav>

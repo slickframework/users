@@ -1,0 +1,34 @@
+<aside class="js-sidebar-wrapper sidebar-wrapper">
+    <nav class="sidebar">
+        <header>
+            <a class="navbar-toggler" data-toggle="sidebar-toggle" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fa fa-arrow-left"></i>
+            </a>
+            <img src="{{ url('img/profile-pic-2.jpg') }}" alt="profile picture" class="profile-picture img-circle">
+            <p class="account-name">
+
+                <a href="{{ url('profile') }}">
+                    {{ authentication.getCurrentAccount().name }}
+                    <span class="fa fa-pencil-square-o" aria-hidden="true"></span>
+                </a>
+            </p>
+            <ul class="profile-action">
+                <li class="profile-action__item">
+                    <a href="{{ url('logout') }}">
+                        <i class="fa fa-sign-out" aria-hidden="true"></i>
+                        <span class="profile-action__item__description"> {{ translate('Logou') }}</span>
+                    </a>
+                </li>
+            </ul>
+        </header>
+        <ul>
+            <li>
+                <a href="{{ url('home') }}">
+                    <i class="fa fa-dashboard"></i>
+                    {{ translate('Dashboard') }}
+                </a>
+            </li>
+        </ul>
+
+    </nav>
+</aside>

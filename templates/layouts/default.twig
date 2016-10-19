@@ -17,19 +17,24 @@
 </head>
 
 <body>
-<header>
-    {% include 'elements/navigation.twig' %}
-</header>
+<div class="full-content">
+    {% if not authentication.isGuest() %}
+        {% include 'elements/sidebar.twig' %}
+    {% endif %}
+    <header>
+        {% include 'elements/navigation.twig' %}
+    </header>
 
-<main class="container">
-    {% include 'flash/messages.twig' %}
-    {% block mainView %}
+        <main class="container">
+            {% include 'flash/messages.twig' %}
+            {% block mainView %}
 
-    {% endblock %}
-</main>
+            {% endblock %}
+        </main>
 
-<footer>
-</footer>
+    <footer>
+    </footer>
+</div>
 
 
 
@@ -40,5 +45,6 @@
 {{ addJs('jquery.min.js', '/js/vendor/jquery')|raw }}
 {{ addJs('tether.min.js', '/js/vendor/tether')|raw }}
 {{ addJs('bootstrap.min.js', '/js/vendor/bootstrap')|raw }}
+{{ addJs('app.js', '/js')|raw }}
 </body>
 </html>
