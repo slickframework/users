@@ -30,4 +30,11 @@ interface ProfileFormInterface extends FormInterface
      */
     public function setAccount(Account $account);
 
+    /**
+     * Get current profile account
+     *
+     * @return Account
+     */
+    public function getAccount();
+
 }

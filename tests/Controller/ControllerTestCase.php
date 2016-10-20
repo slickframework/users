@@ -75,6 +75,23 @@ class ControllerTestCase extends TestCase
     }
 
     /**
+     * Assert that last call to redirect result in a response with
+     * provided location header value.
+     *
+     * @param string $location
+     * @param string $message
+     */
+    public function assertRedirectTo($location, $message = '')
+    {
+        $this->assertTrue(
+            $this->controller->getResponse()->hasHeader('location'),
+            "There was no call to Controller::redirect() method."
+        );
+        $header = $this->controller->getResponse()->getHeader('location');
+        $this->assertEquals($location, $header[0], $message);
+    }
+
+    /**
      * Get a mock object for provided class name
      *
      * @param $className
