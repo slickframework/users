@@ -12,6 +12,7 @@ elements:
     validates:
       notEmpty: We need to send e-mail messages to you. You cannot leave the e-mail address empty.
       email: It seams that this is not a valid e-mail address. Maybe its a type or somethig missing in it.
+      Slick\Users\Shared\Validator\UniqueEmail: The e-mail address already exists. Is it yours?
     filters:
       - Slick\Users\Shared\Filter\Email
   id:

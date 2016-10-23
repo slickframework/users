@@ -9,9 +9,11 @@
 
 namespace Slick\Users\Shared\Validator;
 
+use Slick\Filter\StaticFilter;
 use Slick\Orm\Orm;
 use Slick\Orm\Repository\EntityRepository;
 use Slick\Users\Domain\Account;
+use Slick\Users\Form\ProfileForm;
 use Slick\Validator\AbstractValidator;
 use Slick\Validator\ValidatorInterface;
 
@@ -48,7 +50,7 @@ class UniqueEmail extends AbstractValidator implements ValidatorInterface
      */
     public function validates($value, $context = [])
     {
-        $result = $this->checkEmail($value);
+        $result = $this->checkEmail($value, $this->getAccountId($context));
         if (!$result) {
             $this->addMessage($this->messageTemplate, $value);
         }
@@ -88,12 +90,35 @@ class UniqueEmail extends AbstractValidator implements ValidatorInterface
      *
      * @return bool
      */
-    protected function checkEmail($value)
+    protected function checkEmail($value, $entityId)
     {
         $count = $this->getAccountsRepository()
             ->find()
             ->where(['email = :email' => [':email' => $value]])
+            ->andWhere(['id <> :id' => [':id' => $entityId]])
             ->count();
         return $count == 0;
+    }
+
+    /**
+     * Get account id from context
+     *
+     * @param array $context
+     *
+     * @return int
+     */
+    protected function getAccountId($context = [])
+    {
+        $id = array_key_exists('id', $context)
+            ? StaticFilter::filter('text', $context['id'])
+            : 0;
+        /** @var ProfileForm $form */
+        $form = array_key_exists('form', $context)
+            ? $context['form']
+            : null;
+        if ($form && $form->get('id')) {
+            $id = $form->get('id')->getValue();
+        }
+        return $id;
     }
 }

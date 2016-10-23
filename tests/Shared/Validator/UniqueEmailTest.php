@@ -51,6 +51,12 @@ class UniqueEmailTest extends TestCase
             ->with(['email = :email' => [':email' => 'test']])
             ->willReturn($query)
         ;
+        $query
+            ->expects($this->once())
+            ->method('andWhere')
+            ->with($this->any())
+            ->willReturn($query)
+        ;
         $repository = $this->getAccountRepositoryMock($query);
         $this->validator->setAccountsRepository($repository);
         $this->assertFalse($this->validator->validates('test'));
@@ -67,6 +73,12 @@ class UniqueEmailTest extends TestCase
             ->expects($this->once())
             ->method('where')
             ->with(['email = :email' => [':email' => 'test']])
+            ->willReturn($query)
+        ;
+        $query
+            ->expects($this->once())
+            ->method('andWhere')
+            ->with($this->isType('array'))
             ->willReturn($query)
         ;
         $repository = $this->getAccountRepositoryMock($query);
