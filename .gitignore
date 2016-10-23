@@ -2,3 +2,4 @@
 .idea
 composer.phar
 docker-compose.override.yml
+.DS_Store
