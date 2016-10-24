@@ -1,9 +1,39 @@
 {% extends 'layouts/default.twig' %}
 
 {% block mainView %}
+    {% set account = profileForm.getAccount %}
     <div class="card card-block">
         <h4 class="card-title">{{ translate('Public profile') }}</h4>
-        {{ profileForm|raw }}
+        <form action="" method="post">
+            {{ profileForm.get('id')|raw }}
+            {{ profileForm.get('form-id')|raw }}
+            {{ profileForm.get('name')|raw }}
+            {% set element = profileForm.get('email') %}
+            {% set checked = account.isConfirmed ? 'has-success' : 'has-warning' %}
+            <div class="form-group required {{ element.isValid ? checked : 'has-error' }}">
+                {{ element.getLabel()|raw }}
+                <div class="input-group">
+                    <input required value="{{ element.value }}" id="input-email" name="{{ element.name }}" type="email" class="form-control {{ account.isConfirmed ? 'form-control-success' : 'form-control-warning' }}" >
+                    <span class="input-group-btn">
+                    <button class="btn {{ account.isConfirmed ? 'btn-success' : 'btn-warning' }}" type="button">{{ account.isConfirmed ? translate('Checked!') : translate('Not checked!')}}</button>
+                </span>
+                </div>
+                {% if not element.isValid %}
+                <small class="help-block">
+                    {% for message in element.getValidationChain.getMessages %}
+                        {{ message }}{% if not loop.last %}<br>{% endif %}
+                    {% endfor %}
+                </small>
+                    <br>&nbsp;
+                {% endif %}
+                <small class="text-muted">
+                    {{ translate("Changing your e-mail address requires you to confirm it. So if you change your e-mail address a confirmation message will be sent to you so that you can confirm it.") }}
+                    <br>&nbsp;{{ translate("If you don't receive any e-mail from us you can <a href=\"%s\">request here a new confirmation e-mail message</a> and we will sent it again.")|format(url('resend'))|raw }}
+                </small>
+            </div>
+
+            {{ profileForm.get('buttonGroup')|raw }}
+        </form>
     </div>
 
 {% endblock %}
