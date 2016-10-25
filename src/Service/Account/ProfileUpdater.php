@@ -29,6 +29,13 @@ class ProfileUpdater implements ProfileUpdaterInterface
      */
     public function update(Account $account)
     {
+        $account->confirmed = 0;
+        $credential = $account->credential;
+        if ($credential->email !== $account->email) {
+            $account->confirmed = 0;
+            $credential->email = $account->email;
+            $credential->save();
+        }
         $account->save();
         return $this;
     }

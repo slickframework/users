@@ -1,0 +1,6 @@
+
+.login-form-wrapper {
+  label[for="input-remember"] {
+    @extend small;
+  }
+}

@@ -1,9 +1,11 @@
 <nav class="navbar navbar-fixed-top navbar-dark bg-inverse">
+    {% if not authentication.isGuest() %}
     <a class="navbar-brand" href="#">
         <button class="navbar-toggler" type="button" data-toggle="sidebar-toggle" aria-expanded="false" aria-label="Toggle navigation">
             &#9776;
         </button>
     </a>
+    {% endif %}
     {% block navbar_menu %}
     <a class="navbar-brand logo" href="{{ url('home') }}">
         <img src="{{ url('../img/users-icon.png') }}" align="{{ translate('Users icon') }}">
@@ -15,7 +17,7 @@
     {% block navbar_actions_menu %}
         {% if authentication.isGuest() %}
             <div class="pull-right ">
-            <span>{{ translate('Already have an account?') }}</span>
+            <span class="hidden-xs-down">{{ translate('Already have an account?') }}</span>
             <a href="{{ url('sign-in') }}" class="btn btn-primary">{{ translate('Sign in') }}</a>
             </div>
         {% endif %}

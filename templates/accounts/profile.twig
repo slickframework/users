@@ -14,8 +14,8 @@
                 {{ element.getLabel()|raw }}
                 <div class="input-group">
                     <input required value="{{ element.value }}" id="input-email" name="{{ element.name }}" type="email" class="form-control {{ account.isConfirmed ? 'form-control-success' : 'form-control-warning' }}" >
-                    <span class="input-group-btn">
-                    <button class="btn {{ account.isConfirmed ? 'btn-success' : 'btn-warning' }}" type="button">{{ account.isConfirmed ? translate('Checked!') : translate('Not checked!')}}</button>
+                    <span class="input-group-btn hidden-xs-down">
+                    <button class="btn {{ account.isConfirmed ? 'btn-success' : 'btn-warning' }}" type="button">{{ account.isConfirmed ? translate('Address is confirmed!') : translate('Not checked!')}}</button>
                 </span>
                 </div>
                 {% if not element.isValid %}

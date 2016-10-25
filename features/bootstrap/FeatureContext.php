@@ -1,14 +1,29 @@
 <?php
 
 use Behat\Behat\Context\Context;
-use Behat\Gherkin\Node\PyStringNode;
-use Behat\Gherkin\Node\TableNode;
+use Behat\Testwork\Hook\Scope\AfterSuiteScope;
+use Behat\Testwork\Hook\Scope\BeforeSuiteScope;
 
 /**
  * Defines application features from the specific context.
  */
 class FeatureContext implements Context
 {
+    protected static $options = [
+        'driver' => \Slick\Database\Adapter::DRIVER_MYSQL,
+        'options' => [
+            'host' => 'localhost',
+            'database' => 'slick_users',
+            'username' => 'root',
+            'password' => '',
+        ]
+    ];
+
+    /**
+     * @var \Slick\Database\Adapter\AdapterInterface
+     */
+    protected static $adapter;
+
     /**
      * Initializes context.
      *
@@ -18,5 +33,28 @@ class FeatureContext implements Context
      */
     public function __construct()
     {
+    }
+
+    /**
+     * @BeforeSuite
+     */
+    public static function setup(BeforeSuiteScope $scope)
+    {
+        $host = 'db';
+        if (version_compare(PHP_VERSION, 7.0) >= 0) {
+            $host = '127.0.0.1';
+        }
+        static::$options['options']['host'] = $host;
+        $sql = file_get_contents(__DIR__.'/db-dump.sql');
+        $adapter = new \Slick\Database\Adapter(static::$options);
+        static::$adapter = $adapter->initialize();
+        static::$adapter->execute($sql);
+    }
+
+    /** @AfterSuite */
+    public static function tearDown(AfterSuiteScope $scope)
+    {
+        $sql = file_get_contents(__DIR__.'/db-dump.sql');
+        static::$adapter->execute($sql);
     }
 }
