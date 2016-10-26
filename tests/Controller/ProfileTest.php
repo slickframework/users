@@ -12,6 +12,7 @@ namespace Slick\Users\Tests\Controller;
 use Psr\Log\LoggerInterface;
 use Slick\Users\Controller\Profile;
 use Slick\Users\Domain\Account;
+use Slick\Users\Form\ProfileForm;
 use Slick\Users\Form\ProfileFormInterface;
 use Slick\Users\Service\Account\ProfileUpdater;
 use Slick\Users\Service\Account\ProfileUpdaterInterface;
@@ -117,5 +118,19 @@ class ProfileTest extends ControllerTestCase
         );
         $this->controller->setContainer($container);
         $this->assertSame($updater, $this->controller->getProfileUpdater());
+    }
+
+    /**
+     * Should set an error flash message
+     * @test
+     */
+    public function testInvalidSubmission()
+    {
+        $form = \Phake::mock(ProfileForm::class);
+        \Phake::when($form)->wasSubmitted()->thenReturn(true);
+        \Phake::when($form)->isValid()->thenReturn(false);
+        $this->controller->setProfileForm($form);
+        $this->controller->index();
+        $this->assertErrorFlashMessageMatch('Your profile was not updated.');
     }
 }

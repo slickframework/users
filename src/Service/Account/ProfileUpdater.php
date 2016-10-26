@@ -9,7 +9,11 @@
 
 namespace Slick\Users\Service\Account;
 
+use League\Event\EmitterAwareInterface;
+use League\Event\EmitterInterface;
 use Slick\Users\Domain\Account;
+use Slick\Users\Service\Account\Event\EmailChange;
+use Slick\Users\Shared\Di\DependencyContainerAwareInterface;
 
 /**
  * Profile Update Service
@@ -17,7 +21,10 @@ use Slick\Users\Domain\Account;
  * @package Slick\Users\Service\Account
  * @author  Filipe Silva <silvam.filipe@gmail.com>
  */
-class ProfileUpdater implements ProfileUpdaterInterface
+class ProfileUpdater extends AccountService implements
+    ProfileUpdaterInterface,
+    EmitterAwareInterface,
+    DependencyContainerAwareInterface
 {
 
     /**
@@ -35,8 +42,23 @@ class ProfileUpdater implements ProfileUpdaterInterface
             $account->confirmed = 0;
             $credential->email = $account->email;
             $credential->save();
+            $this->emitEmailChange($account);
         }
         $account->save();
+        return $this;
+    }
+
+    /**
+     * Emits the e-mail change account event
+     *
+     * @param Account $account
+     *
+     * @return ProfileUpdater
+     */
+    protected function emitEmailChange(Account $account)
+    {
+        $event = new EmailChange($account);
+        $this->getEmitter()->emit($event);
         return $this;
     }
 }

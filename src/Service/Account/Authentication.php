@@ -10,15 +10,12 @@
 namespace Slick\Users\Service\Account;
 
 use League\Event\EmitterAwareInterface;
-use League\Event\EmitterInterface;
-use Psr\Log\LoggerInterface;
 use Slick\Orm\Orm;
 use Slick\Orm\RepositoryInterface;
 use Slick\Users\Domain\Account;
 use Slick\Users\Domain\Credential;
 use Slick\Users\Service\Account\Event\SignIn;
 use Slick\Users\Shared\Di\DependencyContainerAwareInterface;
-use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
 
 /**
  * Authentication
@@ -26,7 +23,7 @@ use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
  * @package Slick\Users\Service\Account
  * @author  Filipe Silva <silvam.filipe@gmail.com>
  */
-class Authentication implements
+class Authentication extends AccountService implements
     EmitterAwareInterface,
     DependencyContainerAwareInterface
 {
@@ -39,34 +36,9 @@ class Authentication implements
     protected $account;
 
     /**
-     * @var AccountEventEmitter|EmitterInterface
-     */
-    protected $emitter;
-
-    /**
      * @var RepositoryInterface
      */
     protected $repository;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * Needed to use dependency container
-     */
-    use DependencyContainerAwareMethods;
-
-    /**
-     * Register
-     *
-     * @param LoggerInterface $logger
-     */
-    public function __construct(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
 
     /**
      * Check if provided username and password is from a valid account
@@ -174,31 +146,4 @@ class Authentication implements
         return $encryptionService->match($credential->password);
     }
 
-    /**
-     * Set the Emitter.
-     *
-     * @param EmitterInterface $emitter
-     *
-     * @return $this
-     */
-    public function setEmitter(EmitterInterface $emitter = null)
-    {
-        $this->emitter = $emitter;
-        return $this;
-    }
-
-    /**
-     * Get the Emitter.
-     *
-     * @return EmitterInterface|AccountEventEmitter
-     */
-    public function getEmitter()
-    {
-        if (!$this->emitter) {
-            /** @var AccountEventEmitter $emitter */
-            $emitter = $this->getContainer()->get('accountEventEmitter');
-            $this->setEmitter($emitter);
-        }
-        return $this->emitter;
-    }
 }

@@ -11,6 +11,8 @@ namespace Slick\Users\Tests\Shared\Validator;
 
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 use PHPUnit_Framework_TestCase as TestCase;
+use Slick\Form\InputInterface;
+use Slick\Mvc\Form\EntityForm;
 use Slick\Orm\Repository\EntityRepository;
 use Slick\Orm\Repository\QueryObject\QueryObjectInterface;
 use Slick\Users\Shared\Validator\UniqueEmail;
@@ -46,20 +48,26 @@ class UniqueEmailTest extends TestCase
     {
         $query = $this->getQueryObjectMock(1);
         $query
-            ->expects($this->once())
+            ->expects($this->atLeastOnce())
             ->method('where')
             ->with(['email = :email' => [':email' => 'test']])
             ->willReturn($query)
         ;
         $query
-            ->expects($this->once())
+            ->expects($this->atLeastOnce())
             ->method('andWhere')
-            ->with($this->any())
+            ->with($this->isType('array'))
             ->willReturn($query)
         ;
         $repository = $this->getAccountRepositoryMock($query);
         $this->validator->setAccountsRepository($repository);
-        $this->assertFalse($this->validator->validates('test'));
+        $element = \Phake::mock(InputInterface::class);
+        \Phake::when($element)->getValue()->thenReturn('123');
+        $form = \Phake::mock(EntityForm::class);
+        \Phake::when($form)->get('id')->thenReturn($element);
+        $context = ['form' => $form];
+        $this->assertFalse($this->validator->validates('test', $context));
+        $this->assertFalse($this->validator->validates('test', ['id' => '232']));
     }
 
     /**
@@ -98,7 +106,7 @@ class UniqueEmailTest extends TestCase
     {
         /** @var EntityRepository | MockObject $repository */
         $repository = $this->getMockedObject(EntityRepository::class);
-        $repository->expects($this->once())
+        $repository->expects($this->atLeastOnce())
             ->method('find')
             ->willReturn($queryObject);
         return $repository;
@@ -116,7 +124,7 @@ class UniqueEmailTest extends TestCase
     {
         /** @var QueryObjectInterface|MockObject $query */
         $query = $this->getMockedObject(QueryObjectInterface::class);
-        $query->expects($this->once())
+        $query->expects($this->atLeastOnce())
             ->method('count')
             ->willReturn($count);
         return $query;

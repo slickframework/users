@@ -17,7 +17,7 @@ use League\Event\EventInterface;
  * @package Slick\Users\Service\Account\Event
  * @author  Filipe Silva <silvam.filipe@gmail.com>
  */
-class SignUp extends SignIn implements EventInterface
+class SignUp extends AccountEvent implements EventInterface
 {
 
     const NAME = 'sign-up';

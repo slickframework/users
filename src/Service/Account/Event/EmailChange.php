@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file is part of slick/users package
+ * This file is part of Users.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -9,17 +9,15 @@
 
 namespace Slick\Users\Service\Account\Event;
 
-use League\Event\AbstractEvent;
 use League\Event\EventInterface;
-use Slick\Users\Domain\Account;
 
 /**
- * Sign In event
+ * Account E-mail Change event
  *
  * @package Slick\Users\Service\Account\Event
- * @author  Filipe Silva <silvam.filipe@gmail.com>
+ * @author  Filipe Silva <filipe.silva@sata.pt>
  */
-class SignIn extends AccountEvent implements EventInterface
+class EmailChange extends AccountEvent implements EventInterface
 {
-    const NAME = 'sign-in';
+    const NAME = 'email-change';
 }
