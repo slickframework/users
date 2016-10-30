@@ -9,7 +9,7 @@
 
 namespace Slick\Users\Service\Account\Email;
 
-use Slick\Users\Service\Account\Email\Message\EmailMessageInterface;
+use Slick\Users\Domain\Account;
 use Slick\Users\Service\Email\EmailTransportInterface;
 
 /**
@@ -22,23 +22,16 @@ interface AccountEmailSenderInterface
 {
 
     /**
-     * Set message to be sent
-     *
-     * @param EmailMessageInterface $message
-     *
-     * @return self|$this|AccountEmailSenderInterface
-     */
-    public function setMessage(EmailMessageInterface $message);
-
-    /**
      * Sends out the e-mail message
      *
      * This method should return a boolean true if the message was successfully
      * delivered to the email transport agent.
      *
+     * @param Account $account
+     *
      * @return boolean
      */
-    public function send();
+    public function sendTo(Account $account);
 
     /**
      * Set email transport agent

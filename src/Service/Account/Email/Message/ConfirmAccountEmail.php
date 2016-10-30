@@ -114,6 +114,7 @@ class ConfirmAccountEmail extends MimeMessage implements
      */
     protected function body()
     {
+        $this->getMessageBuilder()->set('account', $this->account);
         $this->getMessageBuilder()
             ->build(
                 $this,

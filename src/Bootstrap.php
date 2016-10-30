@@ -91,6 +91,15 @@ final class Bootstrap
             ->allows(['GET'])
             ->auth(false)
         ;
+        $map->post('confirmEmail', '/account/{id}/confirm')
+            ->defaults([
+                'namespace' => 'Slick\Users\Controller',
+                'controller' => 'confirm',
+                'action' => 'handle',
+            ])
+            ->allows(['GET'])
+            ->auth(false)
+        ;
         $map->post('signIn', '/sign-in')
             ->defaults([
                 'namespace' => 'Slick\Users\Controller',

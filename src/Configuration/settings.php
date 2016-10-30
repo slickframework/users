@@ -46,6 +46,14 @@ $settings['email'] = [
                 ]
             ]
         ]
+    ],
+    'transport' => [
+        'class' => \Slick\Mail\Transport\PhpMailTransport::class,
+        /*
+        'args' => [
+            'options' => []
+        ]
+        */
     ]
 ];
 
