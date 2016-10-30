@@ -12,7 +12,10 @@
 // ------------------------------------
 $settings = [
     'environment' => 'production',
-    'version' => 'v0.1.0'
+    'version' => 'v0.1.0',
+    'server' => [
+        'name' => 'http://localhost'
+    ]
 ];
 
 // ------------------------------------

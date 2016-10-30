@@ -11,7 +11,9 @@ namespace Slick\Users\Controller;
 
 use Slick\Filter\StaticFilter;
 use Slick\Http\Stream;
+use Slick\I18n\TranslateMethods;
 use Slick\Mvc\Controller;
+use Slick\Mvc\Http\FlashMessagesMethods;
 use Slick\Orm\Orm;
 use Slick\Orm\RepositoryInterface;
 use Slick\Users\Domain\Account;
@@ -49,11 +51,20 @@ class Confirm extends Controller implements DependencyContainerAwareInterface
     use DependencyContainerAwareMethods;
 
     /**
+     * To set flash messages to users
+     */
+    use FlashMessagesMethods;
+
+    /**
+     * To translate messages in flash messages
+     */
+    use TranslateMethods;
+
+    /**
      * Handles the request to send a confirmation e-mail to provided account
      */
     public function handle()
     {
-        $this->disableRendering();
         $account = $this->getAccount();
         $data = ['sent' => false];
         if ($account instanceof Account) {
@@ -61,12 +72,13 @@ class Confirm extends Controller implements DependencyContainerAwareInterface
             $this->getEmailSender()->sendTo($account);
         }
 
-        $body = new Stream('php://memory', 'rw+');
-        $body->write(json_encode($data));
-        $this->response = $this->response
-            ->withBody($body)
-            ->withHeader('content-type', 'application/json')
-        ;
+        $this->addSuccessMessage(
+            $this->translate(
+                'An e-mail message will be sent to the e-mail address in ' .
+                'your account. Use it to confirm your e-mail address.'
+            )
+        );
+        $this->redirect($this->request->getHeaderLine('referer'));
     }
 
     /**

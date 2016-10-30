@@ -28,7 +28,7 @@
                 {% endif %}
                 <small class="text-muted">
                     {{ translate("Changing your e-mail address requires you to confirm it. So if you change your e-mail address a confirmation message will be sent to you so that you can confirm it.") }}
-                    <br>&nbsp;{{ translate("If you don't receive any e-mail from us you can <a href=\"%s\">request here a new confirmation e-mail message</a> and we will sent it again.")|format(url('resend'))|raw }}
+                    <br>&nbsp;{{ translate("If you don't receive any e-mail from us you can <a href=\"%s\">request here a new confirmation e-mail message</a> and we will sent it again.")|format(url('confirmEmail', {'id': account.id}))|raw }}
                 </small>
             </div>
 

@@ -13,6 +13,8 @@ use Slick\Template\EngineExtensionInterface;
 use Slick\Template\Extension\AbstractTwigExtension;
 use Slick\Users\Service\Authentication\AuthenticationAwareInterface;
 use Slick\Users\Service\Authentication\AuthenticationAwareMethods;
+use Slick\Users\Shared\Configuration\SettingsAwareInterface;
+use Slick\Users\Shared\Configuration\SettingsAwareMethods;
 use Slick\Users\Shared\Di\DependencyContainerAwareInterface;
 use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
 
@@ -26,7 +28,8 @@ class Authentication extends AbstractTwigExtension implements
     EngineExtensionInterface,
     \Twig_Extension_GlobalsInterface,
     DependencyContainerAwareInterface,
-    AuthenticationAwareInterface
+    AuthenticationAwareInterface,
+    SettingsAwareInterface
 {
 
     /**
@@ -38,6 +41,11 @@ class Authentication extends AbstractTwigExtension implements
      * Used to get access to the Authentication service
      */
     use AuthenticationAwareMethods;
+
+    /**
+     * Get access to settings
+     */
+    use SettingsAwareMethods;
 
     /**
      * Returns the name of the extension.
@@ -57,7 +65,9 @@ class Authentication extends AbstractTwigExtension implements
     function getGlobals()
     {
         return [
-            'authentication' => $this->getAuthenticationService()
+            'authentication' => $this->getAuthenticationService(),
+            'serverAddress' => $this->getSettings()
+                ->get('server.name', 'http://localhost')
         ];
     }
 }
