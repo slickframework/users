@@ -21,4 +21,10 @@ use Slick\Users\Domain\Account;
 interface EmailMessageInterface extends MessageInterface
 {
 
+    /**
+     * Prepares the message before it can be used
+     *
+     * @return self|$this|EmailMessageInterface
+     */
+    public function prepareMessage();
 }

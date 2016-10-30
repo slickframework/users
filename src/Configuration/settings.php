@@ -29,6 +29,27 @@ $settings['users-db'] = [
 ];
 
 // ------------------------------------
+//  Sending e-mail settings
+// ------------------------------------
+$settings['email'] = [
+    'from' => 'no-replay@slickframework.com',
+    'subjects' => [
+        'confirmation' => 'Confirm your e-mail'
+    ],
+    'messages' => [
+        'confirmation' => [
+            'html' => 'email/confirmation.html.twig',
+            'plain' => 'email/confirmation.plain.twig',
+            'embed' => [
+                'logo' => [
+                    'image/png' => APP_PATH . '/webroot/img/users-icon.png'
+                ]
+            ]
+        ]
+    ]
+];
+
+// ------------------------------------
 //  Logging settings
 // ------------------------------------
 $settings['logging'] = [
