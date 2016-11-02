@@ -12,6 +12,7 @@ namespace Slick\Users\Service\Account\Email\Message;
 use Slick\I18n\TranslateMethods;
 use Slick\Mail\Mime\MimeMessage;
 use Slick\Users\Domain\Account;
+use Slick\Users\Domain\Token;
 use Slick\Users\Service\Email\MessageBodyBuilderInterface;
 use Slick\Users\Shared\Configuration\SettingsAwareInterface;
 use Slick\Users\Shared\Configuration\SettingsAwareMethods;
@@ -34,6 +35,11 @@ class ConfirmAccountEmail extends MimeMessage implements
      * @var Account
      */
     protected $account;
+
+    /**
+     * @var Token
+     */
+    protected $token;
 
     /**
      * @var MessageBodyBuilderInterface
@@ -108,19 +114,51 @@ class ConfirmAccountEmail extends MimeMessage implements
     }
 
     /**
+     * Get an account token
+     *
+     * @return Token
+     */
+    public function getToken()
+    {
+        if (!$this->token) {
+            $this->setToken(new Token());
+        }
+        return $this->token;
+    }
+
+    /**
+     * Set an account token
+     *
+     * @param Token $token
+     *
+     * @return ConfirmAccountEmail
+     */
+    public function setToken(Token $token)
+    {
+        $this->token = $token;
+        return $this;
+    }
+
+    /**
      * Prepares message body
      *
      * @return $this|self
      */
     protected function body()
     {
-        $this->getMessageBuilder()->set('account', $this->account);
+        $this->getToken()->account = $this->account;
+        $this->getToken()->action = Token::ACTION_CONFIRM;
+        $this->getMessageBuilder()
+            ->set('account', $this->account)
+            ->set('token', $this->getToken())
+        ;
         $this->getMessageBuilder()
             ->build(
                 $this,
                 $this->getSettings()->get('email.messages.confirmation', [])
             )
         ;
+        $this->getToken()->save();
         return $this;
     }
 

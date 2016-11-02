@@ -9,13 +9,19 @@
 
 namespace Slick\Users\Tests\Service\Account\Email;
 
-
 use Slick\Users\Domain\Account;
 use Slick\Users\Service\Account\Email\ConfirmEmailSender;
+use Slick\Users\Service\Account\Email\Message\ConfirmAccountEmail;
 use Slick\Users\Service\Account\Email\Message\EmailMessageInterface;
 use Slick\Users\Service\Email\EmailTransportInterface;
 use Slick\Users\Tests\TestCase;
 
+/**
+ * Confirm Email Sender Test Case
+ *
+ * @package Slick\Users\Tests\Service\Account\Email
+ * @author  Filipe Silva <silvam.filipe@gmail.com>
+ */
 class ConfirmEmailSenderTest extends TestCase
 {
 
@@ -46,10 +52,22 @@ class ConfirmEmailSenderTest extends TestCase
 
     public function testSendMessage()
     {
+        $account = new Account();
+        $email = \Phake::mock(EmailMessageInterface::class);
+        \Phake::when($email)->prepareMessage()->thenReturn($email);
+        /** @var ConfirmEmailSender|\Phake_IMock $sender */
+        $sender = \Phake::partialMock(ConfirmEmailSender::class);
+        \Phake::when($sender)->getConfirmEmail($account)->thenReturn($email);
         $transport = \Phake::mock(EmailTransportInterface::class);
-        $this->sender->setEmailTransport($transport);
-        $this->sender->sendTo(new Account());
+        $sender->setEmailTransport($transport);
+        $sender->sendTo($account);
         \Phake::verify($transport)->send($this->isInstanceOf(EmailMessageInterface::class));
+    }
+
+    public function testGetConformEmail()
+    {
+        $email = $this->sender->getConfirmEmail(new Account());
+        $this->assertInstanceOf(ConfirmAccountEmail::class, $email);
     }
 }
 

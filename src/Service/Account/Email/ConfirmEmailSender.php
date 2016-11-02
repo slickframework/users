@@ -9,13 +9,18 @@
 
 namespace Slick\Users\Service\Account\Email;
 
-
 use Slick\Users\Domain\Account;
 use Slick\Users\Service\Account\Email\Message\ConfirmAccountEmail;
 use Slick\Users\Service\Email\EmailTransportInterface;
 use Slick\Users\Shared\Di\DependencyContainerAwareInterface;
 use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
 
+/**
+ * Confirm Email Sender
+ *
+ * @package Slick\Users\Service\Account\Email
+ * @author  Filipe Silva <silvam.filipe@gmail.com>
+ */
 class ConfirmEmailSender implements
     AccountEmailSenderInterface,
     DependencyContainerAwareInterface
@@ -71,8 +76,22 @@ class ConfirmEmailSender implements
      */
     public function sendTo(Account $account)
     {
-        $message = new ConfirmAccountEmail($account);
-        $this->getEmailTransport()->send($message->prepareMessage());
+        $this->getEmailTransport()->send(
+            $this->getConfirmEmail($account)->prepareMessage()
+        );
         return true;
     }
+
+    /**
+     * Get a confirmation e-mail message object
+     *
+     * @param Account $account
+     *
+     * @return ConfirmAccountEmail
+     */
+    public function getConfirmEmail(Account $account)
+    {
+        return new ConfirmAccountEmail($account);
+    }
+
 }

@@ -20,6 +20,7 @@
     "require": {
         "php": ">=5.5",
         "graylog2/gelf-php": "^1.5",
+        "paragonie/random_compat": "^2.0",
         "slick/mail": "^1.1",
         "slick/mvc": "^1.2"
     },

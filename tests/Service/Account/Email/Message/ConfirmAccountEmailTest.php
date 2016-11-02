@@ -13,6 +13,7 @@ use Slick\Configuration\ConfigurationInterface;
 use Slick\Mail\MessageBody;
 use Slick\Mail\MessageBodyInterface;
 use Slick\Users\Domain\Account;
+use Slick\Users\Domain\Token;
 use Slick\Users\Service\Account\Email\Message\ConfirmAccountEmail;
 use Slick\Users\Service\Account\Email\Message\EmailMessageInterface;
 use Slick\Users\Service\Email\MessageBodyBuilderInterface;
@@ -59,6 +60,7 @@ class ConfirmAccountEmailTest extends TestCase
      */
     public function testEmailAddress()
     {
+        $this->getMockedToken();
         $this->message->prepareMessage();
         $this->assertEquals(
             "{$this->account->name} <{$this->account->email}>",
@@ -83,6 +85,7 @@ class ConfirmAccountEmailTest extends TestCase
     public function testFromDefinitions()
     {
         $this->message->setSettings($this->getSettings());
+        $this->getMockedToken();
         $this->message->prepareMessage();
         $this->assertEquals(
             "no-replay@example.com",
@@ -97,6 +100,7 @@ class ConfirmAccountEmailTest extends TestCase
      */
     public function testSubject()
     {
+        $this->getMockedToken();
         $this->message->setSettings($this->getSettings());
         $this->message->prepareMessage();
         $this->assertEquals(
@@ -118,10 +122,27 @@ class ConfirmAccountEmailTest extends TestCase
     {
         $dependencies = $this->getDependencies();
         $builder = $dependencies['settingsMessageBuilder'];
+        $token = $token = \Phake::partialMock(Token::class);
+        \Phake::when($token)->save()->thenReturn(true);
+        $this->message->setToken($token);
 
         $this->message->setMessageBuilder($builder);
         $this->message->prepareMessage();
         \Phake::verify($builder)->build($this->message, $this->anything());
+        \Phake::verify($token)->save();
+    }
+
+    /**
+     * Get a mocked token
+     *
+     * @return \Phake_IMock|Token
+     */
+    protected function getMockedToken()
+    {
+        $token = \Phake::partialMock(Token::class);
+        \Phake::when($token)->save()->thenReturn(true);
+        $this->message->setToken($token);
+        return $token;
     }
 
     protected function getSettings()
@@ -139,9 +160,8 @@ class ConfirmAccountEmailTest extends TestCase
 
     protected function getDependencies()
     {
-
-
         $builder = \Phake::mock(MessageBodyBuilderInterface::class);
+        \Phake::when($builder)->set($this->isType('string'), $this->anything())->thenReturn($builder);
         return [
             'settingsMessageBuilder' => $builder
         ];
