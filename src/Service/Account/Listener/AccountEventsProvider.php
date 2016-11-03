@@ -12,6 +12,7 @@ namespace Slick\Users\Service\Account\Listener;
 use League\Event\ListenerAcceptorInterface;
 use League\Event\ListenerInterface;
 use League\Event\ListenerProviderInterface;
+use Slick\Users\Service\Account\Event\EmailChange;
 use Slick\Users\Service\Account\Event\SignIn;
 
 /**
@@ -27,7 +28,8 @@ class AccountEventsProvider implements ListenerProviderInterface
      * @var array List of listeners in this provider
      */
     private $listeners = [
-        SignIn::NAME => AccountSignIn::class
+        SignIn::NAME => AccountSignIn::class,
+        EmailChange::NAME => EmailChanged::class
     ];
 
     /**

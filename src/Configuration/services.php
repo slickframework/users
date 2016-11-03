@@ -105,10 +105,11 @@ $services['response'] = ObjectDefinition::create(Response::class);
 // ------------------------------------
 // Middleware
 // ------------------------------------
-$services['session.middleware']     = ObjectDefinition::create(Session::class);
-$services['authentication.middleware']     = ObjectDefinition::create(\Slick\Users\Service\Http\AuthenticationMiddleware::class);
-$services['url.rewrite.middleware'] = ObjectDefinition::create(UrlRewrite::class);
-$services['router.middleware']      = ObjectDefinition::create(Router::class)
+$services['session.middleware']      = ObjectDefinition::create(Session::class);
+$services['authentication.middleware']  = ObjectDefinition::create(\Slick\Users\Service\Http\AuthenticationMiddleware::class);
+$services['emailConfirm.middleware'] = ObjectDefinition::create(\Slick\Users\Service\Http\EmailConfirmationMiddleware::class);
+$services['url.rewrite.middleware']  = ObjectDefinition::create(UrlRewrite::class);
+$services['router.middleware']       = ObjectDefinition::create(Router::class)
     ->setMethod(
         'setRouteFile',
         [APP_PATH.'/src/Configuration/routes.yml']
@@ -132,6 +133,7 @@ $services['middleware.runner'] = ObjectDefinition::create(Server::class)
     ->setMethod('add', ['@url.rewrite.middleware'])
     ->setMethod('add', ['@router.middleware'])
     ->setMethod('add', ['@authentication.middleware'])
+    ->setMethod('add', ['@emailConfirm.middleware'])
     ->setMethod('add', ['@dispatcher.middleware'])
     ->setMethod('add', ['@renderer.middleware']);
 return $services;

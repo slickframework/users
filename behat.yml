@@ -3,7 +3,9 @@ default:
     all_features_suite:
       contexts:
         - FeatureContext
-        - Behat\MinkExtension\Context\MinkContext
+        - MessagesContext:
+          - parameters:
+            mailcatcher: http://192.168.99.100:1080
   extensions:
     Behat\MinkExtension:
       goutte: ~

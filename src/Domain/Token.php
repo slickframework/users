@@ -26,6 +26,7 @@ use Slick\Users\Shared\DataType\DateTime;
  * @property string   $action  The action this token is used for
  *
  * @adapter slickUsers
+ * @repository Slick\Users\Domain\Repository\TokenRepository
  */
 class Token extends Entity
 {
