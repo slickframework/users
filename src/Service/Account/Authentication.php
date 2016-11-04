@@ -28,7 +28,7 @@ class Authentication extends AccountService implements
     DependencyContainerAwareInterface
 {
 
-    const SESSION_KEY= 'sign-in-data';
+    const SESSION_KEY = 'sign-in-data';
 
     /**
      * @var Account

@@ -70,10 +70,13 @@ class ProfileUpdateTest extends TestCase
      */
     public function updateEmailChange()
     {
+        $emitter = \Phake::mock(EmitterInterface::class);
+        $this->service->setEmitter($emitter);
         list($account, $credential) = $this->getMissMatchData();
         $this->service->update($account);
         \Phake::verify($credential)->save();
         $this->assertFalse($account->isConfirmed());
+        \Phake::verify($emitter)->emit($this->isInstanceOf(EmailChange::class));
     }
 
     /**

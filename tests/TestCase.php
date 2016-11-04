@@ -67,4 +67,15 @@ class TestCase extends PHPUnitTestCase
         return $settings;
     }
 
+    /**
+     * Get a self answer
+     * @return \Phake_Stubber_AnswerCollection
+     */
+    protected function getSelfAnswer()
+    {
+        return new \Phake_Stubber_AnswerCollection(
+            new \Phake_Stubber_Answers_SelfAnswer()
+        );
+    }
+
 }
