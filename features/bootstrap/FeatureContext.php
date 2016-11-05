@@ -41,8 +41,8 @@ class FeatureContext implements Context
     public static function setup(BeforeSuiteScope $scope)
     {
         $host = 'db';
-        if (version_compare(PHP_VERSION, 7.0) >= 0) {
-            $host = '127.0.0.1';
+        if (getenv('RUNNING_ENV') !== 'docker-container') {
+            $host = '192.168.99.100';
         }
         static::$options['options']['host'] = $host;
         $sql = file_get_contents(__DIR__.'/db-dump.sql');

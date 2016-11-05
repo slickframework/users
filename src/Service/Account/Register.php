@@ -9,10 +9,13 @@
 
 namespace Slick\Users\Service\Account;
 
+use League\Event\EmitterAwareInterface;
 use Psr\Log\LoggerInterface;
 use Slick\Common\Base;
+use Slick\Common\BaseMethods;
 use Slick\Users\Domain\Account;
 use Slick\Users\Domain\Credential;
+use Slick\Users\Service\Account\Event\SignUp;
 use Slick\Users\Service\Account\Register\RegisterRequest;
 
 /**
@@ -25,8 +28,10 @@ use Slick\Users\Service\Account\Register\RegisterRequest;
  * @property Credential $credential
  * @property RegisterRequest $registerRequest
  */
-class Register extends Base
+class Register extends AccountService implements EmitterAwareInterface
 {
+
+    use BaseMethods;
 
     /**
      * @readwrite
@@ -47,22 +52,6 @@ class Register extends Base
     protected $credential;
 
     /**
-     * @write
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * Register
-     *
-     * @param LoggerInterface $logger
-     */
-    public function __construct(LoggerInterface $logger)
-    {
-        parent::__construct(['logger' => $logger]);
-    }
-
-    /**
      * Registers the new user account
      *
      * @param RegisterRequest $registerRequest
@@ -74,6 +63,8 @@ class Register extends Base
         $account->save();
         $credential = $this->getCredential();
         $credential->account = $account;
+        $event = new SignUp($account);
+        $this->getEmitter()->emit($event);
         $this->logger->info(
             'New account created.',
             ['e-mail' => $account->email]
