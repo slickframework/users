@@ -15,7 +15,9 @@ use Slick\Http\PhpEnvironment\Request;
 use Slick\Http\PhpEnvironment\Response;
 use Slick\Mvc\Form\EntityForm;
 use Slick\Users\Controller\Accounts;
+use Slick\Users\Form\AccountRegisterForm;
 use Slick\Users\Service\Account\Register;
+use Slick\Users\Service\Authentication;
 
 /**
  * Accounts controller test case
@@ -41,6 +43,9 @@ class AccountsTest extends ControllerTestCase
         $request = \Phake::mock(Request::class);
         $response = new Response();
         $this->controller->register($request, $response);
+        $auth = \Phake::mock(Authentication::class);
+        \Phake::when($auth)->isGuest()->thenReturn(true);
+        $this->controller->setAuthenticationService($auth);
     }
 
     /**
@@ -147,5 +152,17 @@ class AccountsTest extends ControllerTestCase
         \Phake::when($container)->get('logger')->thenReturn($logger);
         $this->controller->setContainer($container);
         $this->assertSame($logger, $this->controller->getLogger());
+    }
+
+    public function testForbiddenSignedInUser()
+    {
+        $form = \Phake::mock(AccountRegisterForm::class);
+        \Phake::when($form)->wasSubmitted()->thenReturn(false);
+        $auth = \Phake::mock(Authentication::class);
+        \Phake::when($auth)->isGuest()->thenReturn(false);
+        $this->controller->setAuthenticationService($auth);
+        $this->controller->setRegisterForm($form);
+        $this->controller->signUp();
+        $this->assertRedirectTo('/pages/forbidden');
     }
 }

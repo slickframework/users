@@ -17,6 +17,8 @@ use Slick\Mvc\Http\FlashMessagesMethods;
 use Slick\Users\Form\AccountRegisterForm;
 use Slick\Users\Form\UsersForms;
 use Slick\Users\Service\Account\Register;
+use Slick\Users\Service\Authentication\AuthenticationAwareInterface;
+use Slick\Users\Service\Authentication\AuthenticationAwareMethods;
 use Slick\Users\Shared\Di\DependencyContainerAwareInterface;
 use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
 
@@ -26,7 +28,9 @@ use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
  * @package Slick\Users\Controller
  * @author  Filipe Silva <silvam.filipe@gmail.com>
  */
-class Accounts extends Controller implements DependencyContainerAwareInterface
+class Accounts extends Controller implements
+    DependencyContainerAwareInterface,
+    AuthenticationAwareInterface
 {
 
     /**
@@ -43,6 +47,11 @@ class Accounts extends Controller implements DependencyContainerAwareInterface
      * For dependency container aware interface implementation
      */
     use DependencyContainerAwareMethods;
+
+    /**
+     * For authentication data
+     */
+    use AuthenticationAwareMethods;
 
     /**
      * @var LoggerInterface
@@ -65,6 +74,7 @@ class Accounts extends Controller implements DependencyContainerAwareInterface
     public function signUp()
     {
         $form = $this->getRegisterForm();
+        $this->checkUser();
         if ($form->wasSubmitted()) {
             try {
                 $this->registerAccount($form);
@@ -78,6 +88,16 @@ class Accounts extends Controller implements DependencyContainerAwareInterface
             }
         }
         $this->set(compact('form'));
+    }
+
+    /**
+     * Should set redirect if user is not a guest
+     */
+    public function checkUser()
+    {
+        if (!$this->getAuthenticationService()->isGuest()) {
+            $this->redirect('pages/forbidden');
+        }
     }
 
     /**

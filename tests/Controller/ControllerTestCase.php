@@ -89,7 +89,7 @@ class ControllerTestCase extends TestCase
             "There was no call to Controller::redirect() method."
         );
         $header = $this->controller->getResponse()->getHeader('location');
-        $this->assertEquals($location, $header[0], $message);
+        $this->assertRegExp("#$location$#i", $header[0], $message);
     }
 
     /**

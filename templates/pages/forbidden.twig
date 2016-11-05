@@ -1,0 +1,10 @@
+{% extends 'layouts/default.twig' %}
+
+{% block mainView %}
+    <h1>
+        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+        {{ translate('403 Forbidden') }}
+    </h1>
+    <hr>
+    <p>{{ translate('You are not alowed to access this page.') }}</p>
+{% endblock %}

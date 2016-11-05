@@ -27,4 +27,12 @@ class Pages extends Controller
     {
 
     }
+
+    /**
+     * Forbidden page
+     */
+    public function forbidden()
+    {
+        $this->response = $this->getResponse()->withStatus(403);
+    }
 }
