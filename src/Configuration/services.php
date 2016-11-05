@@ -39,6 +39,9 @@ $services = [];
 // ------------------------------------
 $services['profileUpdater'] = ObjectDefinition::create(\Slick\Users\Service\Account\ProfileUpdater::class)
     ->setConstructArgs(['@logger']);
+$services['confirmEmailSender'] = ObjectDefinition::create(\Slick\Users\Service\Account\Email\ConfirmEmailSender::class);
+$services['mailTransportAgent'] = ObjectDefinition::create(\Slick\Users\Service\Email\SlickMailTransport::class);
+$services['settingsMessageBuilder'] = ObjectDefinition::create(\Slick\Users\Service\Email\SettingsMessageBuilder::class);
 $services['authentication'] = ObjectDefinition::create(\Slick\Users\Service\Authentication::class);
 $services['accountEventsListenerProvider'] = ObjectDefinition::create(AccountEventsProvider::class);
 $services['accountRegister'] = ObjectDefinition::create(Register::class)
@@ -102,10 +105,11 @@ $services['response'] = ObjectDefinition::create(Response::class);
 // ------------------------------------
 // Middleware
 // ------------------------------------
-$services['session.middleware']     = ObjectDefinition::create(Session::class);
-$services['authentication.middleware']     = ObjectDefinition::create(\Slick\Users\Service\Http\AuthenticationMiddleware::class);
-$services['url.rewrite.middleware'] = ObjectDefinition::create(UrlRewrite::class);
-$services['router.middleware']      = ObjectDefinition::create(Router::class)
+$services['session.middleware']      = ObjectDefinition::create(Session::class);
+$services['authentication.middleware']  = ObjectDefinition::create(\Slick\Users\Service\Http\AuthenticationMiddleware::class);
+$services['emailConfirm.middleware'] = ObjectDefinition::create(\Slick\Users\Service\Http\EmailConfirmationMiddleware::class);
+$services['url.rewrite.middleware']  = ObjectDefinition::create(UrlRewrite::class);
+$services['router.middleware']       = ObjectDefinition::create(Router::class)
     ->setMethod(
         'setRouteFile',
         [APP_PATH.'/src/Configuration/routes.yml']
@@ -128,6 +132,7 @@ $services['middleware.runner'] = ObjectDefinition::create(Server::class)
     ->setMethod('add', ['@session.middleware'])
     ->setMethod('add', ['@url.rewrite.middleware'])
     ->setMethod('add', ['@router.middleware'])
+    ->setMethod('add', ['@emailConfirm.middleware'])
     ->setMethod('add', ['@authentication.middleware'])
     ->setMethod('add', ['@dispatcher.middleware'])
     ->setMethod('add', ['@renderer.middleware']);

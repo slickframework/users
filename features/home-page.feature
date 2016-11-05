@@ -7,4 +7,4 @@
 
   Scenario: Get to te home page
     Given I am on the homepage
-    Then I should see "Starter Template for Slick Framework web site"
+    Then I should see "Sign in"

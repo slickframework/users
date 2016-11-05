@@ -9,11 +9,13 @@
 
 namespace Slick\Users\Tests\Service\Account;
 
+use League\Event\EmitterInterface;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Log\LoggerInterface;
 use Slick\Users\Domain\Account;
 use Slick\Users\Domain\Credential;
+use Slick\Users\Service\Account\Event\SignUp;
 use Slick\Users\Service\Account\Register;
 use Slick\Users\Tests\MockMethods;
 
@@ -102,7 +104,10 @@ class RegisterTest extends TestCase
             ->willReturn(1);
         $this->service->account = $account;
         $this->service->credential = $credential;
+        $emitter = \Phake::mock(EmitterInterface::class);
+        $this->service->setEmitter($emitter);
         $this->service->execute($this->request);
+        \Phake::verify($emitter)->emit($this->isInstanceOf(SignUp::class));
     }
 
 }

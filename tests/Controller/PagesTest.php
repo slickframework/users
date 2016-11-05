@@ -41,4 +41,10 @@ class PagesTest extends ControllerTestCase
         $this->controller->home();
         $this->assertEmptyVars();
     }
+
+    public function testForbidden()
+    {
+        $this->controller->forbidden();
+        $this->assertEquals(403, $this->controller->getResponse()->getStatusCode());
+    }
 }

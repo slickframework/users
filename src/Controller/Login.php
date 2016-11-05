@@ -18,6 +18,8 @@ use Slick\Mvc\Http\SessionAwareMethods;
 use Slick\Users\Form\LoginForm;
 use Slick\Users\Form\UsersForms;
 use Slick\Users\Service\Account\Authentication;
+use Slick\Users\Service\Authentication\AuthenticationAwareInterface;
+use Slick\Users\Service\Authentication\AuthenticationAwareMethods;
 use Slick\Users\Service\Http\AuthenticationMiddleware;
 use Slick\Users\Shared\Di\DependencyContainerAwareInterface;
 use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
@@ -30,7 +32,8 @@ use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
  */
 class Login extends Controller implements
     DependencyContainerAwareInterface,
-    SessionAwareInterface
+    SessionAwareInterface,
+    AuthenticationAwareInterface
 {
 
     /**
@@ -41,7 +44,7 @@ class Login extends Controller implements
     /**
      * @var Authentication
      */
-    protected $authenticationService;
+    protected $accountAuthenticationService;
 
     /**
      * @var LoggerInterface
@@ -67,6 +70,8 @@ class Login extends Controller implements
      * To use session
      */
     use SessionAwareMethods;
+
+    use AuthenticationAwareMethods;
 
     /**
      * Gets loginForm property
@@ -99,6 +104,7 @@ class Login extends Controller implements
      */
     public function signIn()
     {
+        $this->checkGuest();
         $this->setView('accounts/sign-in');
         $form = $this->getLoginForm();
         $this->set(compact('form'));
@@ -108,32 +114,39 @@ class Login extends Controller implements
         }
     }
 
+    public function checkGuest()
+    {
+        if (!$this->getAuthenticationService()->isGuest()) {
+            $this->redirect('sign-out');
+        }
+    }
+
     /**
      * Gets authenticationService property
      *
      * @return Authentication
      */
-    public function getAuthenticationService()
+    public function getAccountAuthenticationService()
     {
-        if (!$this->authenticationService) {
+        if (!$this->accountAuthenticationService) {
             /** @var Authentication $service */
             $service = $this->getContainer()->get('accountAuthentication');
-            $this->setAuthenticationService($service);
+            $this->setAccountAuthenticationService($service);
         }
-        return $this->authenticationService;
+        return $this->accountAuthenticationService;
     }
 
     /**
      * Sets authenticationService property
      *
-     * @param Authentication $authenticationService
+     * @param Authentication $accountAuthenticationService
      *
      * @return Login
      */
-    public function setAuthenticationService(
-        Authentication $authenticationService
+    public function setAccountAuthenticationService(
+        Authentication $accountAuthenticationService
     ) {
-        $this->authenticationService = $authenticationService;
+        $this->accountAuthenticationService = $accountAuthenticationService;
         return $this;
     }
 
@@ -173,7 +186,7 @@ class Login extends Controller implements
         $data = $this->getLoginForm()->getData();
         try {
             $valid = $this->getLoginForm()->isValid() &&
-                $this->getAuthenticationService()
+                $this->getAccountAuthenticationService()
                     ->login($data['username'], $data['password']);
             if ($valid) {
                 $page = $this->getSessionDriver()
@@ -200,7 +213,7 @@ class Login extends Controller implements
             );
             return;
         }
-
+        $this->response = $this->getResponse()->withStatus(401);
         $this->addErrorMessage(
             $this->translate(
                 'Invalid credentials. Please try again.'

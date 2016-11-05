@@ -31,6 +31,12 @@ services:
     working_dir: /usr/src/app
     depends_on:
       - db
+      - mail
+
+  mail:
+    image: helder/mailcatcher
+    ports:
+      - 1080:80
 
   gulp:
     image: helder/node

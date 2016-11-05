@@ -9,6 +9,7 @@
 
 namespace Slick\Users\Tests\Controller;
 
+use Aura\Router\Route;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 use Slick\Http\PhpEnvironment\Request;
 use Slick\Http\PhpEnvironment\Response;
@@ -88,7 +89,7 @@ class ControllerTestCase extends TestCase
             "There was no call to Controller::redirect() method."
         );
         $header = $this->controller->getResponse()->getHeader('location');
-        $this->assertEquals($location, $header[0], $message);
+        $this->assertRegExp("#$location$#i", $header[0], $message);
     }
 
     /**
@@ -157,13 +158,39 @@ class ControllerTestCase extends TestCase
      */
     protected function assertErrorFlashMessageMatch($expected, $message = '')
     {
+        $this->assertFlashMessage($expected, FlashMessages::TYPE_ERROR, $message);
+    }
+
+    /**
+     * Assert that a success message was set in the flash messages
+     *
+     * @param $expected
+     * @param string $message
+     */
+    protected function assertSuccessFlashMessageMatch($expected, $message = '')
+    {
+        $this->assertFlashMessage($expected, FlashMessages::TYPE_SUCCESS, $message);
+    }
+
+    /**
+     * Assert that a message of provided type was set in the flash messages
+     *
+     * @param string $expected
+     * @param int $type
+     * @param string $message
+     */
+    protected function assertFlashMessage(
+        $expected,
+        $type = FlashMessages::TYPE_ERROR,
+        $message = ''
+    ) {
         $message = $message === ''
-            ? "Expected error message '{$expected}' not set."
+            ? "Expected message '{$expected}' not set."
             : $message;
         $allMessages = $this->getFlashMessages()->get();
         $found = false;
-        $messages = array_key_exists(FlashMessages::TYPE_ERROR, $allMessages)
-            ? $allMessages[FlashMessages::TYPE_ERROR]
+        $messages = array_key_exists($type, $allMessages)
+            ? $allMessages[$type]
             : [];
         foreach ($messages as $msgToCheck) {
             if (preg_match("/.*{$expected}.*/i", $msgToCheck)) {
@@ -176,5 +203,20 @@ class ControllerTestCase extends TestCase
             $this->fail($message);
         }
         $this->assertTrue(true);
+    }
+
+    /**
+     * Set route attributes
+     *
+     * @param array $values
+     */
+    protected function setRouteAttributes(array $values)
+    {
+        $route = new Route();
+        $route->attributes($values);
+        $request = $this->controller->getRequest()
+            ->withAttribute('route', $route);
+        $response = $this->controller->getResponse();
+        $this->controller->register($request, $response);
     }
 }

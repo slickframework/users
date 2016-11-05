@@ -1,0 +1,8 @@
+{% set name = account.name ?: translate('there') %}
+{{ translate('Hi :name,')|replace({':name': name}) }}
+{{ translate('To make sure we have your correct e-mail, please confirm it by clicking the link below:') }}
+
+{{ serverAddress }}?action=confirm&token={{ token }}
+
+{{ translate('Thank you!') }}
+{{ translate('The Slick team') }}

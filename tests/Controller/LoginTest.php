@@ -69,7 +69,7 @@ class LoginTest extends ControllerTestCase
             'accountAuthentication' => \Phake::mock(Authentication::class)
         ];
         $this->controller->setContainer($this->getContainerMock($dep));
-        $auth = $this->controller->getAuthenticationService();
+        $auth = $this->controller->getAccountAuthenticationService();
         $this->assertSame($dep['accountAuthentication'], $auth);
     }
 
@@ -97,10 +97,13 @@ class LoginTest extends ControllerTestCase
         \Phake::when($form)->isValid()->thenReturn(true);
         \Phake::when($form)->getData()->thenReturn(['username' => 'foo', 'password' => 'bar']);
         $this->controller->setLoginForm($form);
+        $authService = \Phake::mock(\Slick\Users\Service\Authentication::class);
+        \Phake::when($authService)->isGuest()->thenReturn(true);
         $auth = \Phake::mock(Authentication::class);
         \Phake::when($auth)->login('foo', 'bar')->thenReturn(true);
         $dep = [
-            'accountAuthentication' => $auth
+            'accountAuthentication' => $auth,
+            'authentication' => $authService
         ];
         $this->controller->setContainer($this->getContainerMock($dep));
         $this->controller->signIn();
@@ -118,9 +121,12 @@ class LoginTest extends ControllerTestCase
         \Phake::when($form)->getData()->thenReturn(['username' => 'foo', 'password' => 'bar']);
         $this->controller->setLoginForm($form);
         $auth = \Phake::mock(Authentication::class);
+        $authService = \Phake::mock(\Slick\Users\Service\Authentication::class);
+        \Phake::when($authService)->isGuest()->thenReturn(true);
         \Phake::when($auth)->login('foo', 'bar')->thenReturn(false);
         $dep = [
-            'accountAuthentication' => $auth
+            'accountAuthentication' => $auth,
+            'authentication' => $authService
         ];
         $this->controller->setContainer($this->getContainerMock($dep));
         $this->controller->signIn();
@@ -140,16 +146,33 @@ class LoginTest extends ControllerTestCase
         $this->controller->setLoginForm($form);
         $logger = \Phake::mock(LoggerInterface::class);
 
+        $authService = \Phake::mock(\Slick\Users\Service\Authentication::class);
+        \Phake::when($authService)->isGuest()->thenReturn(true);
         $auth = \Phake::mock(Authentication::class);
         \Phake::when($auth)->login('foo', 'bar')->thenThrow(new \Exception('Error!'));
         $dep = [
             'accountAuthentication' => $auth,
-            'logger' => $logger
+            'logger' => $logger,
+            'authentication' => $authService
         ];
         $this->controller->setContainer($this->getContainerMock($dep));
         $this->controller->signIn();
         \Phake::verify($logger)->alert('Error signing in account.', ['error' => 'Error!']);
         $this->assertErrorFlashMessageMatch('Error signing in.');
+    }
+
+    public function testLoggedInAccessToSignInPage()
+    {
+        $form = \Phake::mock(LoginForm::class);
+        \Phake::when($form)->wasSubmitted()->thenReturn(false);
+        $authService = \Phake::mock(\Slick\Users\Service\Authentication::class);
+        \Phake::when($authService)->isGuest()->thenReturn(false);
+        $this->controller
+            ->setLoginForm($form)
+            ->setAuthenticationService($authService)
+        ;
+        $this->controller->signIn();
+        $this->assertRedirectTo('/sign-out');
     }
 
 }

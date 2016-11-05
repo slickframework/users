@@ -24,3 +24,5 @@ $bsFile = $application->getConfigPath().'/bootstrap.php';
 if (is_file($bsFile)) {
     include $bsFile;
 }
+
+\Slick\Template\Template::addPath(APP_PATH.'/templates');
