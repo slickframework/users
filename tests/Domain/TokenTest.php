@@ -55,6 +55,13 @@ class TokenTest extends TestCase
 
     public function testAsString()
     {
-        $this->assertEquals((string)$this->token, $this->token->getToken());
+        $this->assertEquals((string)$this->token, $this->token->getPublicToken());
+    }
+
+    public function testTokenHash()
+    {
+        $code = 123123123;
+        $this->token->code = $code;
+        $this->assertEquals(hash('sha256', $code), $this->token->getToken());
     }
 }

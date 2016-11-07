@@ -74,10 +74,8 @@ class EmailConfirmationMiddleware extends AbstractMiddleware implements
     {
         $this->request = $request;
         if ($token = $this->getToken()) {
-            $this->confirmAccount($token);
-            $this->addSuccessMessage(
-                $this->translate("Your e-mail address was successfully confirmed.")
-            );
+            $this->validateToken($token);
+            $token->delete();
         }
         return $this->executeNext($request, $response);
     }
@@ -137,11 +135,35 @@ class EmailConfirmationMiddleware extends AbstractMiddleware implements
         $action = $this->request->getQuery('action', false);
         if ($tokenStr && $action) {
             $tkn = $this->getRepository()->getToken($tokenStr);
-            $token = $tkn->isValid() && $tkn->action == $action
+            $token = !$tkn->hasExpired() && $tkn->action == $action
                 ? $tkn
                 : null;
         }
         return $token;
+    }
+
+    /**
+     * Check token validity
+     *
+     * If the selector is present but the token does not match, a theft is
+     * assumed. The user receives a strongly worded warning and all of the
+     * user's tokens will be deleted.
+     *
+     * @param Token $token
+     */
+    protected function validateToken(Token $token)
+    {
+        if (!$token->isValid()) {
+            $this->getRepository()->deleteAccountTokens($token);
+            $this->addErrorMessage(
+                $this->translate(
+                    "Possible token theft detected. For your account data " .
+                    "security all account generated tokens were delete."
+                )
+            );
+            return;
+        }
+        $this->confirmAccount($token);
     }
 
     /**
@@ -153,6 +175,9 @@ class EmailConfirmationMiddleware extends AbstractMiddleware implements
     {
         $token->account->confirmed = true;
         $token->account->save();
+        $this->addSuccessMessage(
+            $this->translate("Your e-mail address was successfully confirmed.")
+        );
         if (
             $this->getAuthenticationService()->getCurrentAccount()->getId()
             == $token->account->getId()

@@ -9,9 +9,12 @@
 
 namespace Slick\Users\Tests\Domain\Repository;
 
+use Slick\Database\Adapter\AdapterInterface;
+use Slick\Database\Sql\Delete;
 use Slick\Orm\Orm;
 use Slick\Orm\Repository\QueryObject\QueryObject;
 use Slick\Orm\Repository\QueryObject\QueryObjectInterface;
+use Slick\Users\Domain\Account;
 use Slick\Users\Domain\Repository\TokenRepository;
 use Slick\Users\Domain\Token;
 use Slick\Users\Tests\TestCase;
@@ -40,8 +43,22 @@ class TokenRepositoryTest extends TestCase
         /** @var TokenRepository|\Phake_IMock $repo */
         $repo = \Phake::partialMock(TokenRepository::class);
         \Phake::when($repo)->find()->thenReturn($query);
-        $this->assertSame($token, $repo->getToken('test'));
-        \Phake::verify($query)->where(['token = :tkn' => [':tkn' => 'test']]);
+        $this->assertSame($token, $repo->getToken('test:12345abc'));
+        \Phake::verify($query)->where(['selector = :key' => [':key' => 'test']]);
         \Phake::verify($query)->order('tokens.ttl DESC');
+    }
+
+    public function testAccountTokensDelete()
+    {
+        $adapter = \Phake::mock(AdapterInterface::class);
+        $repo = new TokenRepository();
+        $repo->setAdapter($adapter);
+        $repo->deleteAccountTokens(new Token(['account' => new Account(['id' => 123])]));
+        \Phake::verify($adapter)->execute(
+            $this->isInstanceOf(Delete::class),
+            [
+                ':id' => 123
+            ]
+        );
     }
 }

@@ -58,8 +58,7 @@ class EmailConfirmationMiddlewareTest extends TestCase
     {
         $response = new Response();
         $request = (new Request())
-            ->withQueryParams([])
-        ;
+            ->withQueryParams([]);
         $this->middleWare->handle($request, $response);
         $this->assertNull($this->middleWare->getToken());
     }
@@ -71,8 +70,7 @@ class EmailConfirmationMiddlewareTest extends TestCase
             ->withQueryParams([
                 'action' => 'confirm',
                 'token' => 'test'
-            ])
-        ;
+            ]);
         /** @var TokenRepository|\Phake_IMock $repo */
         $repo = \Phake::mock(TokenRepository::class);
         \Phake::when($repo)->getToken('test')->thenReturn(new Token(['ttl' => '2015-09-09']));
@@ -83,38 +81,57 @@ class EmailConfirmationMiddlewareTest extends TestCase
 
     public function testValidToken()
     {
-        $loggedIn = new Account(['id' => 1]);
         $tokenAccount = \Phake::partialMock(Account::class, ['id' => 2]);
         \Phake::when($tokenAccount)->save()->thenReturn(0);
 
-        $authentication = \Phake::mock(Authentication::class);
-        \Phake::when($authentication)->getCurrentAccount()->thenReturn($loggedIn);
-        $this->middleWare->setAuthenticationService($authentication);
-
-        $flashMessages = \Phake::mock(FlashMessages::class);
-        $this->middleWare->setFlashMessages($flashMessages);
+        $flashMessages = $this->setMockFlashMessages();
 
         $response = new Response();
         $request = (new Request())
             ->withQueryParams([
                 'action' => 'confirm',
-                'token' => 'test'
+                'token' => 'test:12345abc'
             ])
         ;
+
         /** @var TokenRepository|\Phake_IMock $repo */
         $repo = \Phake::mock(TokenRepository::class);
-        \Phake::when($repo)->getToken('test')->thenReturn(
-            new Token(
-                [
-                    'ttl' => new DateTime('+3 hours'),
-                    'account' => $tokenAccount
-                ]
-            )
-        );
+        \Phake::when($repo)->getToken('test:12345abc')->thenReturn($this->getValidToken($tokenAccount));
         $this->middleWare->setRepository($repo);
+
         $this->middleWare->handle($request, $response);
+
         \Phake::verify($flashMessages)->set(0, 'Your e-mail address was successfully confirmed.');
         \Phake::verify($tokenAccount)->save();
+    }
+
+    public function testInvalidTokenValue()
+    {
+        $flashMessages = $this->setMockFlashMessages();
+
+        $response = new Response();
+        $request = (new Request())
+            ->withQueryParams([
+                'action' => 'confirm',
+                'token' => 'test:12345abc'
+            ])
+        ;
+
+        $token = $this->getValidToken(new Account());
+        $token->validate('abc123456');
+
+        /** @var TokenRepository|\Phake_IMock $repo */
+        $repo = \Phake::mock(TokenRepository::class);
+        \Phake::when($repo)->getToken('test:12345abc')->thenReturn($token);
+        $this->middleWare->setRepository($repo);
+
+        $this->middleWare->handle($request, $response);
+
+        \Phake::verify($flashMessages)->set(
+            1,
+            'Possible token theft detected. For your account data security ' .
+            'all account generated tokens were delete.'
+        );
     }
 
     public function testValidTokenCurrentUser()
@@ -122,9 +139,8 @@ class EmailConfirmationMiddlewareTest extends TestCase
         $loggedIn = new Account(['id' => 2]);
         $tokenAccount = \Phake::partialMock(Account::class, ['id' => 2]);
         \Phake::when($tokenAccount)->save()->thenReturn(0);
-        $data = (object) [
-            'account' => $loggedIn
-        ];
+        $data = (object)['account' => $loggedIn];
+
         $session = \Phake::mock(SessionDriverInterface::class);
         \Phake::when($session)->get('sign-in-data')->thenReturn($data);
 
@@ -133,29 +149,53 @@ class EmailConfirmationMiddlewareTest extends TestCase
         \Phake::when($authentication)->getSession()->thenReturn($session);
         $this->middleWare->setAuthenticationService($authentication);
 
-        $flashMessages = \Phake::mock(FlashMessages::class);
-        $this->middleWare->setFlashMessages($flashMessages);
+        $flashMessages = $this->setMockFlashMessages();
 
         $response = new Response();
         $request = (new Request())
             ->withQueryParams([
                 'action' => 'confirm',
-                'token' => 'test'
-            ])
-        ;
+                'token' => 'test:12345abc'
+            ]);
+
         /** @var TokenRepository|\Phake_IMock $repo */
         $repo = \Phake::mock(TokenRepository::class);
-        \Phake::when($repo)->getToken('test')->thenReturn(
-            new Token(
-                [
-                    'ttl' => new DateTime('+3 hours'),
-                    'account' => $tokenAccount
-                ]
-            )
-        );
+        \Phake::when($repo)->getToken('test:12345abc')->thenReturn($this->getValidToken($tokenAccount));
         $this->middleWare->setRepository($repo);
+
         $this->middleWare->handle($request, $response);
+
         \Phake::verify($flashMessages)->set(0, 'Your e-mail address was successfully confirmed.');
         \Phake::verify($tokenAccount)->save();
+    }
+
+    /**
+     * @return \Phake_IMock|FlashMessages
+     */
+    protected function setMockFlashMessages()
+    {
+        $flashMessages = \Phake::mock(FlashMessages::class);
+        $this->middleWare->setFlashMessages($flashMessages);
+        return $flashMessages;
+    }
+
+    /**
+     * Get a partial mocked and valid token
+     *
+     * @param Account $account
+     * @return \Phake_IMock|Token
+     */
+    protected function getValidToken(Account $account)
+    {
+        $token = \Phake::partialMock(Token::class,
+            [
+                'ttl' => new DateTime('+3 hours'),
+                'account' => $account
+            ]
+        );
+        $token->token = hash('sha256', '12345abc');
+        $token->validate('12345abc');
+        \Phake::when($token)->delete()->thenReturn(0);
+        return $token;
     }
 }

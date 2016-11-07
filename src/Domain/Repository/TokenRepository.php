@@ -9,6 +9,7 @@
 
 namespace Slick\Users\Domain\Repository;
 
+use Slick\Database\Sql;
 use Slick\Orm\Repository\EntityRepository;
 use Slick\Orm\RepositoryInterface;
 use Slick\Users\Domain\Token;
@@ -25,15 +26,34 @@ class TokenRepository extends EntityRepository implements RepositoryInterface
     /**
      * Get a token by its token
      *
-     * @param string $token
+     * @param string $publicToken
      *
      * @return Token|null
      */
-    public function getToken($token)
+    public function getToken($publicToken)
     {
-        return $this->find()
-            ->where(['token = :tkn' => [':tkn' => $token]])
+        $parts = explode(':', $publicToken);
+        list($selector, $plainTextToken) = $parts;
+        /** @var Token $token */
+        $token = $this->find()
+            ->where(['selector = :key' => [':key' => $selector]])
             ->order('tokens.ttl DESC')
             ->first();
+        return $token ? $token->validate($plainTextToken) : null;
+    }
+
+    /**
+     * Deletes all the tokens with the same account of the provided token
+     *
+     * @param Token $token
+     *
+     * @return int Affected rows
+     */
+    public function deleteAccountTokens(Token $token)
+    {
+        return Sql::createSql($this->getAdapter())
+            ->delete('tokens')
+            ->where(['account_id => :id' => [':id' => $token->account->id]])
+            ->execute();
     }
 }
