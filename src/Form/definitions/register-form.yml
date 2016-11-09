@@ -24,7 +24,7 @@ elements:
     type: password
     label: Confirm your password
     validates:
-      Slick\Users\Shared\Validator\PasswordMatch: "The password don't match."
+      Slick\Users\Shared\Validator\PasswordMatch: "The passwords don't match."
   buttonGroup:
     type: fieldset
     elements:
