@@ -58,7 +58,7 @@ class MessagesContext extends MinkContext implements Context
      */
     public function iFollowTheConfirmLinkOnTheEMail()
     {
-        $regExp = '/(?P<url>https?:\/\/.*\n)/i';
+        $regExp = '/(?P<url>https?:\/\/.*token.*\n)/i';
         $request = new \Slick\Http\Request(\Slick\Http\Request::METHOD_GET, '/messages/'.$this->message->id.'.plain');
         $response = $this->getClient()->send($request);
         $plain = $response->getBody()->getContents();

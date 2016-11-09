@@ -46,7 +46,8 @@ LOCK TABLES `accounts` WRITE;
 /*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
 INSERT INTO `accounts` VALUES
 (1,'Filipe Silva','silvam.filipe@gmail.com',1,1,'2016-10-07 18:29:03','2016-10-07 18:29:03',1),
-(2,'Jon Doe','jon.doe@example.com',1,1,'2016-10-24 17:39:52','2016-10-25 16:48:11',1);
+(2,'Jon Doe','jon.doe@example.com',1,1,'2016-10-24 17:39:52','2016-10-25 16:48:11',1),
+(3,'Jane Doe','jane.doe@example.com',1,1,'2016-10-24 17:39:52','2016-10-25 16:48:11',1);
 /*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -80,7 +81,8 @@ LOCK TABLES `credentials` WRITE;
 /*!40000 ALTER TABLE `credentials` DISABLE KEYS */;
 INSERT INTO `credentials` VALUES
 (1,'silvam.filipe','silvam.filipe@gmail.com','$2y$13$x6nXb0AyLziILcEIFHtPUevSL.N3JI0rKWERK3MPZcRAOclM5dbZG',1),
-(2,'jon.doe','jon.doe@example.com','$2y$13$GvJtX5N.sFMaXvvswnit9.sYx18UPfCBu89O6zu.MJK3NaygoeFoW',2);
+(2,'jon.doe','jon.doe@example.com','$2y$13$GvJtX5N.sFMaXvvswnit9.sYx18UPfCBu89O6zu.MJK3NaygoeFoW',2),
+(3,'jane.doe','jane.doe@example.com','$2y$13$GvJtX5N.sFMaXvvswnit9.sYx18UPfCBu89O6zu.MJK3NaygoeFoW',3);
 /*!40000 ALTER TABLE `credentials` ENABLE KEYS */;
 UNLOCK TABLES;
 
