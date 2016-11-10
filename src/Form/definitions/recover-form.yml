@@ -1,0 +1,20 @@
+id: recover-password
+class: Slick\Users\Form\RecoverPasswordForm
+elements:
+  email:
+    type: text
+    label: E-mail address
+    validates:
+      notEmpty: E-mail address is mandatory to recover your password.
+      email: It seems that this is not a valid e-mail address.
+    filters:
+      - Slick\Users\Shared\Filter\Email
+
+  buttonGroup:
+    type: fieldset
+    elements:
+      submit:
+        type: submit
+        value: Recover my password
+        attributes:
+          class: btn btn-primary

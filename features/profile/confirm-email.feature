@@ -17,7 +17,7 @@
     When I press "Update profile"
     Then I should see "Not checked!"
     And I should receive an e-mail on "jon.doe@example.org" address
-    When I follow the confirm link on the e-mail
+    When I follow the token link on the e-mail
     Then I should see "Your e-mail address was successfully confirmed."
     When I am on "profile"
     And I should see "Address is confirmed!"

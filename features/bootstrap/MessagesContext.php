@@ -54,7 +54,7 @@ class MessagesContext extends MinkContext implements Context
     }
 
     /**
-     * @When /^I follow the confirm link on the e\-mail$/
+     * @When /^I follow the token link on the e\-mail$/
      */
     public function iFollowTheConfirmLinkOnTheEMail()
     {
@@ -89,7 +89,9 @@ class MessagesContext extends MinkContext implements Context
                 $this->message = $message;
             }
         }
-        PHPUnit_Framework_Assert::assertTrue($found, "No messages found for $address address.");
+        if (!$found) {
+            throw new \Exception("No messages found for $address address.");
+        }
     }
 
     protected function deleteMessages()

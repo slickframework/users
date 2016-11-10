@@ -29,6 +29,7 @@ use Slick\Users\Tests\Shared\Domain\AuditAwareEntity;
  * @method bool isConfirmed()
  *
  * @adapter slickUsers
+ * @repository Slick\Users\Domain\Repository\AccountsRepository
  */
 class Account extends AuditAwareEntity
 {

@@ -39,6 +39,7 @@ $services = [];
 // ------------------------------------
 $services['profileUpdater'] = ObjectDefinition::create(\Slick\Users\Service\Account\ProfileUpdater::class)
     ->setConstructArgs(['@logger']);
+$services['recoverPasswordService'] = ObjectDefinition::create(\Slick\Users\Service\Account\RecoverPasswordService::class);
 $services['confirmEmailSender'] = ObjectDefinition::create(\Slick\Users\Service\Account\Email\ConfirmEmailSender::class);
 $services['mailTransportAgent'] = ObjectDefinition::create(\Slick\Users\Service\Email\SlickMailTransport::class);
 $services['settingsMessageBuilder'] = ObjectDefinition::create(\Slick\Users\Service\Email\SettingsMessageBuilder::class);

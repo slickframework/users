@@ -53,4 +53,11 @@ final class UsersForms
         $form = FormRegistry::getForm(__DIR__.'/definitions/profile-form.yml');
         return $form;
     }
+
+    public static function getRecoverPasswordForm()
+    {
+        /** @var RecoverPasswordForm $form */
+        $form = FormRegistry::getForm(__DIR__.'/definitions/recover-form.yml');
+        return $form;
+    }
 }

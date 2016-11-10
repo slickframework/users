@@ -1,0 +1,19 @@
+{% extends 'layouts/default.twig' %}
+
+{% block mainView %}
+    <div class="card card-block recover">
+        <h1 class="card-title">{{ translate('Recover password') }}</h1>
+        <small class="text-muted">
+            {{ translate('Password recover instructions will be sent to your email address.') }}
+        </small>
+        <div class="recover-form-wrapper">
+            {{ form.render|raw }}
+        </div>
+        <a href="{{ url("sign-in") }}" class="recover-lnk">{{ translate("I already remember my password!") }}</a>
+    </div>
+
+{% endblock %}
+
+{% block navigation %}
+    {% include 'elements/login-page.twig' %}
+{% endblock %}

@@ -109,6 +109,15 @@ final class Bootstrap
             ->allows(['GET'])
             ->auth(false)
         ;
+        $map->post('recover', '/recover-password')
+            ->defaults([
+                'namespace' => 'Slick\Users\Controller',
+                'controller' => 'recover',
+                'action' => 'request',
+            ])
+            ->allows(['GET'])
+            ->auth(false)
+        ;
         $map->post('logout', '/sign-out')
             ->defaults([
                 'namespace' => 'Slick\Users\Controller',
