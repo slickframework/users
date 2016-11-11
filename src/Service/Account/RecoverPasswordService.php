@@ -13,6 +13,9 @@ use Slick\Orm\Orm;
 use Slick\Users\Domain\Account;
 use Slick\Users\Domain\Repository\AccountsRepositoryInterface;
 use Slick\Users\Exception\Accounts\UnknownEmailException;
+use Slick\Users\Service\Account\Email\RecoverEmailSender;
+use Slick\Users\Shared\Di\DependencyContainerAwareInterface;
+use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
 
 /**
  * Recover Password Service
@@ -20,7 +23,9 @@ use Slick\Users\Exception\Accounts\UnknownEmailException;
  * @package Slick\Users\Service\Account
  * @author  Filipe Silva <silvam.filipe@gmail.com>
  */
-class RecoverPasswordService implements RecoverPasswordInterface
+class RecoverPasswordService implements
+    RecoverPasswordInterface,
+    DependencyContainerAwareInterface
 {
 
     /**
@@ -39,6 +44,16 @@ class RecoverPasswordService implements RecoverPasswordInterface
     protected $email;
 
     /**
+     * @var RecoverEmailSender
+     */
+    protected $recoverEmailSender;
+
+    /**
+     * To have access to dependency container
+     */
+    use DependencyContainerAwareMethods;
+
+    /**
      * Sends out the e-mail message to the provided email address
      *
      * @return self|$this|RecoverPasswordInterface
@@ -47,11 +62,12 @@ class RecoverPasswordService implements RecoverPasswordInterface
      */
     public function requestEmail()
     {
-        if (!$this->account) {
+        if (!$this->getAccount()) {
             throw new UnknownEmailException(
                 "No account for provided e-mail address: {$this->email}"
             );
         }
+        $this->getRecoverEmailSender()->sendTo($this->getAccount());
         return $this;
     }
 
@@ -106,7 +122,7 @@ class RecoverPasswordService implements RecoverPasswordInterface
      *
      * @return RecoverPasswordService
      */
-    public function setAccount(Account $account)
+    public function setAccount(Account $account = null)
     {
         $this->account = $account;
         return $this;
@@ -122,6 +138,33 @@ class RecoverPasswordService implements RecoverPasswordInterface
     public function setEmail($email)
     {
         $this->email = $email;
+        return $this;
+    }
+
+    /**
+     * Get Recover Email Sender
+     *
+     * @return RecoverEmailSender
+     */
+    public function getRecoverEmailSender()
+    {
+        if (!$this->recoverEmailSender) {
+            $this->setRecoverEmailSender(
+                $this->getContainer()->get('recoverEmailSender')
+            );
+        }
+        return $this->recoverEmailSender;
+    }
+
+    /**
+     * Set Recover Email Sender
+     *
+     * @param RecoverEmailSender $recoverEmailSender
+     * @return RecoverPasswordService
+     */
+    public function setRecoverEmailSender(RecoverEmailSender $recoverEmailSender)
+    {
+        $this->recoverEmailSender = $recoverEmailSender;
         return $this;
     }
 }

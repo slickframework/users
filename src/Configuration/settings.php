@@ -37,12 +37,22 @@ $settings['users-db'] = [
 $settings['email'] = [
     'from' => 'no-replay@slickframework.com',
     'subjects' => [
-        'confirmation' => 'Confirm your e-mail'
+        'confirmation' => 'Slick Users - Account\'s e-mail confirmation',
+        'recover' => 'Slick Users - Password recover instructions',
     ],
     'messages' => [
         'confirmation' => [
             'html' => 'email/confirmation.html.twig',
             'plain' => 'email/confirmation.plain.twig',
+            'embed' => [
+                'logo' => [
+                    'image/png' => APP_PATH . '/webroot/img/users-icon.png'
+                ]
+            ]
+        ],
+        'recover' => [
+            'html' => 'email/recover.html.twig',
+            'plain' => 'email/recover.plain.twig',
             'embed' => [
                 'logo' => [
                     'image/png' => APP_PATH . '/webroot/img/users-icon.png'

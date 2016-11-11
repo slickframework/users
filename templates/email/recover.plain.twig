@@ -1,0 +1,12 @@
+{% set name = account.name ?: translate('there') %}
+{{ translate('Hi :name,')|replace({':name': name}) }}
+
+{{ translate('You\'ve requested a password recovery for your Slick Users account.') }}
+{{ translate('To recover the password to your account, please click on the link below:') }}
+
+{{ serverAddress }}change-password?action=confirm&token={{ token }}
+
+{{ translate('If you do not wish to change your password, please ignore this email.') }}
+
+{{ translate('Thank you!') }}
+{{ translate('The Slick team') }}

@@ -102,7 +102,14 @@ class Recover extends Controller implements DependencyContainerAwareInterface
             $this->getRecoverService()
                 ->setEmail($email)
                 ->requestEmail();
-
+            $this->addSuccessMessage(
+                $this->translate(
+                    "An e-mail message with password recover instructions " .
+                    "was sent to your e-mail address. Please check your " .
+                    "inbox to proceed with your password recover."
+                )
+            );
+            $this->getRecoverForm()->get('email')->setValue('');
         } catch (UnknownEmailException $caught) {
             $this->addErrorMessage(
                 $this->translate(
