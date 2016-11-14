@@ -41,4 +41,4 @@ Feature: Recover password
       |E-mail address|jane.doe|
       |Password      |1234567|
     When I press "Sign in"
-    Then the "Public e-mail address" field should contain "jon.doe@example.com"
+    Then the "Public e-mail address" field should contain "jane.doe@example.com"

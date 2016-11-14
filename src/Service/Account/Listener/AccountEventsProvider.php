@@ -13,6 +13,7 @@ use League\Event\ListenerAcceptorInterface;
 use League\Event\ListenerInterface;
 use League\Event\ListenerProviderInterface;
 use Slick\Users\Service\Account\Event\EmailChange;
+use Slick\Users\Service\Account\Event\RecoveredPassword;
 use Slick\Users\Service\Account\Event\SignIn;
 use Slick\Users\Service\Account\Event\SignUp;
 
@@ -29,9 +30,13 @@ class AccountEventsProvider implements ListenerProviderInterface
      * @var array List of listeners in this provider
      */
     private $listeners = [
-        SignIn::NAME      => AccountSignIn::class,
-        EmailChange::NAME => EmailChanged::class,
-        SignUp::NAME      => EmailChanged::class
+        SignIn::NAME            => AccountSignIn::class,
+        EmailChange::NAME       => EmailChanged::class,
+        SignUp::NAME            => [
+            EmailChanged::class,
+            AccountSignIn::class
+        ],
+        RecoveredPassword::NAME => AccountSignIn::class
     ];
 
     /**
@@ -44,6 +49,14 @@ class AccountEventsProvider implements ListenerProviderInterface
     public function provideListeners(ListenerAcceptorInterface $listenerAcceptor)
     {
         foreach ($this->listeners as $event => $listenerClass) {
+            if (is_array($listenerClass)) {
+                foreach ($listenerClass as $innerClass) {
+                    /** @var ListenerInterface $listener */
+                    $listener = new $innerClass();
+                    $listenerAcceptor->addListener($event, $listener);
+                }
+                continue;
+            }
             /** @var ListenerInterface $listener */
             $listener = new $listenerClass();
             $listenerAcceptor->addListener($event, $listener);
