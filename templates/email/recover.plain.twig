@@ -4,7 +4,7 @@
 {{ translate('You\'ve requested a password recovery for your Slick Users account.') }}
 {{ translate('To recover the password to your account, please click on the link below:') }}
 
-{{ serverAddress }}change-password?action=confirm&token={{ token }}
+{{ serverAddress }}/change-password?action=recover&token={{ token }}
 
 {{ translate('If you do not wish to change your password, please ignore this email.') }}
 

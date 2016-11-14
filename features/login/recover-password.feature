@@ -34,7 +34,7 @@ Feature: Recover password
     And I fill in "Password" with "1234567"
     And I fill in "Confirm your password" with "1234567"
     And I press "Change my password"
-    Then I should see "Your password was recovered successfully."
+    Then I should see "Your password was successfully recovered."
     Given I am on "sign-out"
     And I am on "profile"
     And I fill in the following:

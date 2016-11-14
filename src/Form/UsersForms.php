@@ -60,4 +60,16 @@ final class UsersForms
         $form = FormRegistry::getForm(__DIR__.'/definitions/recover-form.yml');
         return $form;
     }
+
+    /**
+     * Get the change password form
+     *
+     * @return PasswordChangeFormInterface
+     */
+    public static function getChangePasswordForm()
+    {
+        /** @var PasswordChangeFormInterface $form */
+        $form = FormRegistry::getForm(__DIR__.'/definitions/password-change-form.yml');
+        return $form;
+    }
 }

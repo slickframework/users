@@ -133,7 +133,7 @@ class EmailConfirmationMiddleware extends AbstractMiddleware implements
         $token = null;
         $tokenStr = $this->request->getQuery('token', false);
         $action = $this->request->getQuery('action', false);
-        if ($tokenStr && $action) {
+        if ($tokenStr && $action == Token::ACTION_CONFIRM) {
             $tkn = $this->getRepository()->getToken($tokenStr);
             $token = !$tkn->hasExpired() && $tkn->action == $action
                 ? $tkn

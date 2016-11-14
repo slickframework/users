@@ -118,6 +118,15 @@ final class Bootstrap
             ->allows(['GET'])
             ->auth(false)
         ;
+        $map->post('changePassword', '/change-password')
+            ->defaults([
+                'namespace' => 'Slick\Users\Controller',
+                'controller' => 'passwords',
+                'action' => 'change',
+            ])
+            ->allows(['GET'])
+            ->auth(false)
+        ;
         $map->post('logout', '/sign-out')
             ->defaults([
                 'namespace' => 'Slick\Users\Controller',

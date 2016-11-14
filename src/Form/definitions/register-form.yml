@@ -19,7 +19,7 @@ elements:
     type: password
     label: Password
     validates:
-      notEmpty: Please specify a password to your acount
+      notEmpty: Please specify a password to your account
   confirmPassword:
     type: password
     label: Confirm your password
