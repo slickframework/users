@@ -11,9 +11,18 @@ namespace Slick\Users\Controller;
 
 use Slick\Mvc\Controller;
 
+/**
+ * SignOut
+ *
+ * @package Slick\Users\Controller
+ * @author  Filipe Silva <silvam.filipe@gmail.com>
+ */
 class SignOut extends Controller
 {
 
+    /**
+     * Handles the request to logout a user
+     */
     public function handle()
     {
         session_regenerate_id(true);

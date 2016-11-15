@@ -18,7 +18,8 @@ use Slick\Users\Domain\Account;
  * @package Slick\Users\Domain\Repository
  * @author  Filipe Silva <silvam.filipe@gmail.com>
  */
-class AccountsRepository extends EntityRepository implements AccountsRepositoryInterface
+class AccountsRepository extends EntityRepository implements
+    AccountsRepositoryInterface
 {
 
     /**

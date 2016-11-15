@@ -9,10 +9,6 @@
 
 namespace Slick\Users\Controller;
 
-use Psr\Log\LoggerInterface;
-use Slick\I18n\TranslateMethods;
-use Slick\Mvc\Controller;
-use Slick\Mvc\Http\FlashMessagesMethods;
 use Slick\Mvc\Http\SessionAwareInterface;
 use Slick\Mvc\Http\SessionAwareMethods;
 use Slick\Users\Form\LoginForm;
@@ -21,8 +17,7 @@ use Slick\Users\Service\Account\Authentication;
 use Slick\Users\Service\Authentication\AuthenticationAwareInterface;
 use Slick\Users\Service\Authentication\AuthenticationAwareMethods;
 use Slick\Users\Service\Http\AuthenticationMiddleware;
-use Slick\Users\Shared\Di\DependencyContainerAwareInterface;
-use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
+use Slick\Users\Shared\Controller\BaseController;
 
 /**
  * Login controller
@@ -30,8 +25,7 @@ use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
  * @package Slick\Users\Controller
  * @author  Filipe Silva <silvam.filipe@gmail.com>
  */
-class Login extends Controller implements
-    DependencyContainerAwareInterface,
+class Login extends BaseController implements
     SessionAwareInterface,
     AuthenticationAwareInterface
 {
@@ -45,26 +39,6 @@ class Login extends Controller implements
      * @var Authentication
      */
     protected $accountAuthenticationService;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * o use dependency container
-     */
-    use DependencyContainerAwareMethods;
-
-    /**
-     * Needed to display flash messages
-     */
-    use FlashMessagesMethods;
-
-    /**
-     * Needed to translate flash messages
-     */
-    use TranslateMethods;
 
     /**
      * To use session
@@ -147,34 +121,6 @@ class Login extends Controller implements
         Authentication $accountAuthenticationService
     ) {
         $this->accountAuthenticationService = $accountAuthenticationService;
-        return $this;
-    }
-
-    /**
-     * Gets logger property
-     *
-     * @return LoggerInterface
-     */
-    public function getLogger()
-    {
-        if (!$this->logger) {
-            /** @var LoggerInterface $logger */
-            $logger = $this->getContainer()->get('logger');
-            $this->setLogger($logger);
-        }
-        return $this->logger;
-    }
-
-    /**
-     * Sets logger property
-     *
-     * @param LoggerInterface $logger
-     *
-     * @return Login
-     */
-    public function setLogger($logger)
-    {
-        $this->logger = $logger;
         return $this;
     }
 

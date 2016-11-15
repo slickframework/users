@@ -9,18 +9,13 @@
 
 namespace Slick\Users\Controller;
 
-use Psr\Log\LoggerInterface;
-use Slick\I18n\TranslateMethods;
-use Slick\Mvc\Controller;
 use Slick\Mvc\Form\EntityForm;
-use Slick\Mvc\Http\FlashMessagesMethods;
 use Slick\Users\Form\AccountRegisterForm;
 use Slick\Users\Form\UsersForms;
 use Slick\Users\Service\Account\Register;
 use Slick\Users\Service\Authentication\AuthenticationAwareInterface;
 use Slick\Users\Service\Authentication\AuthenticationAwareMethods;
-use Slick\Users\Shared\Di\DependencyContainerAwareInterface;
-use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
+use Slick\Users\Shared\Controller\BaseController;
 
 /**
  * Users controller
@@ -28,35 +23,14 @@ use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
  * @package Slick\Users\Controller
  * @author  Filipe Silva <silvam.filipe@gmail.com>
  */
-class Accounts extends Controller implements
-    DependencyContainerAwareInterface,
+class Accounts extends BaseController implements
     AuthenticationAwareInterface
 {
-
-    /**
-     * To translate session messages
-     */
-    use TranslateMethods;
-
-    /**
-     * For session message display
-     */
-    use FlashMessagesMethods;
-
-    /**
-     * For dependency container aware interface implementation
-     */
-    use DependencyContainerAwareMethods;
 
     /**
      * For authentication data
      */
     use AuthenticationAwareMethods;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
 
     /**
      * @var AccountRegisterForm
@@ -178,34 +152,6 @@ class Accounts extends Controller implements
     public function setRegisterService(Register $registerService)
     {
         $this->registerService = $registerService;
-        return $this;
-    }
-
-    /**
-     * Gets logger property
-     *
-     * @return LoggerInterface
-     */
-    public function getLogger()
-    {
-        if (!$this->logger) {
-            /** @var LoggerInterface $logger */
-            $logger = $this->getContainer()->get('logger');
-            $this->setLogger($logger);
-        }
-        return $this->logger;
-    }
-
-    /**
-     * Sets logger property
-     *
-     * @param LoggerInterface $logger
-     *
-     * @return Accounts
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
         return $this;
     }
 

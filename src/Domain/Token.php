@@ -65,7 +65,7 @@ namespace Slick\Users\Domain {
          * @var string
          * @display
          */
-        protected $token;
+        protected $token = '';
 
         /**
          * @readwrite
@@ -247,12 +247,13 @@ namespace Slick\Users\Domain {
         {
             if (strlen($str1) != strlen($str2)) {
                 return false;
-            } else {
-                $res = $str1 ^ $str2;
-                $ret = 0;
-                for ($i = strlen($res) - 1; $i >= 0; $i--) $ret |= ord($res[$i]);
-                return !$ret;
             }
+
+            $res = $str1 ^ $str2;
+            $ret = 0;
+            for ($i = strlen($res) - 1; $i >= 0; $i--) $ret |= ord($res[$i]);
+            return !$ret;
+
         }
     }
 }

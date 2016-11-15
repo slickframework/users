@@ -12,6 +12,7 @@ namespace Slick\Users\Tests\Controller;
 use Slick\Orm\RepositoryInterface;
 use Slick\Users\Controller\Confirm;
 use Slick\Users\Domain\Account;
+use Slick\Users\Domain\Repository\AccountsRepository;
 use Slick\Users\Service\Account\Email\AccountEmailSenderInterface;
 
 /**
@@ -43,7 +44,7 @@ class ConfirmTest extends ControllerTestCase
      */
     public function testGetRepository()
     {
-        $repo = $this->controller->getRepository();
+        $repo = $this->controller->getAccountsRepository();
         $this->assertInstanceOf(RepositoryInterface::class, $repo);
     }
 
@@ -74,9 +75,9 @@ class ConfirmTest extends ControllerTestCase
         $account = new Account();
         $attributes = ['id' => $id];
         $this->setRouteAttributes($attributes);
-        $repository = \Phake::mock(RepositoryInterface::class);
+        $repository = \Phake::mock(AccountsRepository::class);
         \Phake::when($repository)->get($id)->thenReturn($account);
-        $this->controller->setRepository($repository);
+        $this->controller->setAccountsRepository($repository);
         $this->assertSame($account, $this->controller->getAccount());
     }
 

@@ -9,19 +9,12 @@
 
 namespace Slick\Users\Controller;
 
-use Slick\I18n\TranslateMethods;
-use Slick\Mvc\Controller;
-use Slick\Mvc\Http\FlashMessagesMethods;
 use Slick\Users\Domain\Account;
 use Slick\Users\Form\ProfileForm;
 use Slick\Users\Form\ProfileFormInterface;
 use Slick\Users\Form\UsersForms;
 use Slick\Users\Service\Account\ProfileUpdater;
 use Slick\Users\Service\Account\ProfileUpdaterInterface;
-use Slick\Users\Shared\Common\LoggerAwareInterface;
-use Slick\Users\Shared\Common\LoggerAwareMethods;
-use Slick\Users\Shared\Di\DependencyContainerAwareInterface;
-use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
 
 /**
  * Profile controller
@@ -29,9 +22,7 @@ use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
  * @package Slick\Users\Controller
  * @author  Filipe Silva <silvam.filipe@gmail.com>
  */
-class Profile extends Controller implements
-    DependencyContainerAwareInterface,
-    LoggerAwareInterface
+class Profile extends AccountAwareController
 {
 
     /**
@@ -40,34 +31,9 @@ class Profile extends Controller implements
     protected $profileForm;
 
     /**
-     * @var Account
-     */
-    protected $account;
-
-    /**
      * @var ProfileUpdater
      */
     protected $profileUpdater;
-
-    /**
-     * Use to gain access to dependency container
-     */
-    use DependencyContainerAwareMethods;
-
-    /**
-     * To display used flash messages
-     */
-    use FlashMessagesMethods;
-
-    /**
-     * To add translation to output messages
-     */
-    use TranslateMethods;
-
-    /**
-     * To use the logger service
-     */
-    use LoggerAwareMethods;
 
     /**
      * Gets profile for property
@@ -120,19 +86,6 @@ class Profile extends Controller implements
             $this->setAccount($this->getProfileForm()->getAccount());
         }
         return $this->account;
-    }
-
-    /**
-     * Sets account property
-     *
-     * @param Account $account
-     *
-     * @return Profile
-     */
-    public function setAccount($account)
-    {
-        $this->account = $account;
-        return $this;
     }
 
     /**

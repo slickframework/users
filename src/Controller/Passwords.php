@@ -10,9 +10,6 @@
 namespace Slick\Users\Controller;
 
 use Slick\Filter\StaticFilter;
-use Slick\I18n\TranslateMethods;
-use Slick\Mvc\Controller;
-use Slick\Mvc\Http\FlashMessagesMethods;
 use Slick\Orm\Orm;
 use Slick\Users\Domain\Repository\TokenRepository;
 use Slick\Users\Domain\Token;
@@ -20,10 +17,7 @@ use Slick\Users\Exception\Accounts\InvalidTokenException;
 use Slick\Users\Form\PasswordChangeFormInterface;
 use Slick\Users\Form\UsersForms;
 use Slick\Users\Service\Account\ChangePasswordInterface;
-use Slick\Users\Shared\Common\LoggerAwareInterface;
-use Slick\Users\Shared\Common\LoggerAwareMethods;
-use Slick\Users\Shared\Di\DependencyContainerAwareInterface;
-use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
+use Slick\Users\Shared\Controller\BaseController;
 
 /**
  * Passwords
@@ -31,9 +25,7 @@ use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
  * @package Slick\Users\Controller
  * @author  Filipe Silva <silvam.filipe@gmail.com>
  */
-class Passwords extends Controller implements
-    DependencyContainerAwareInterface,
-    LoggerAwareInterface
+class Passwords extends BaseController
 {
 
     /**
@@ -55,14 +47,6 @@ class Passwords extends Controller implements
      * @var TokenRepository
      */
     protected $tokenRepository;
-
-    use TranslateMethods;
-
-    use FlashMessagesMethods;
-
-    use DependencyContainerAwareMethods;
-
-    use LoggerAwareMethods;
 
     /**
      * Handles password recover change

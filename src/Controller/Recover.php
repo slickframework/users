@@ -9,16 +9,11 @@
 
 namespace Slick\Users\Controller;
 
-use Psr\Log\LoggerInterface;
-use Slick\I18n\TranslateMethods;
-use Slick\Mvc\Controller;
-use Slick\Mvc\Http\FlashMessagesMethods;
 use Slick\Users\Exception\Accounts\UnknownEmailException;
 use Slick\Users\Form\RecoverPasswordForm;
 use Slick\Users\Form\UsersForms;
 use Slick\Users\Service\Account\RecoverPasswordInterface;
-use Slick\Users\Shared\Di\DependencyContainerAwareInterface;
-use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
+use Slick\Users\Shared\Controller\BaseController;
 
 /**
  * Recover
@@ -26,7 +21,7 @@ use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
  * @package Slick\Users\Controller
  * @author  Filipe Silva <silvam.filipe@gmail.com>
  */
-class Recover extends Controller implements DependencyContainerAwareInterface
+class Recover extends BaseController
 {
 
     /**
@@ -38,26 +33,6 @@ class Recover extends Controller implements DependencyContainerAwareInterface
      * @var RecoverPasswordInterface
      */
     protected $recoverService;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * Used to access the dependency container
-     */
-    use DependencyContainerAwareMethods;
-
-    /**
-     * Used to set the session messages
-     */
-    use FlashMessagesMethods;
-
-    /**
-     * Used to translate the messages
-     */
-    use TranslateMethods;
 
     /**
      * Handle recover request password
@@ -183,33 +158,6 @@ class Recover extends Controller implements DependencyContainerAwareInterface
     public function setRecoverService(RecoverPasswordInterface $recoverService)
     {
         $this->recoverService = $recoverService;
-        return $this;
-    }
-    /**
-     * Gets logger property
-     *
-     * @return LoggerInterface
-     */
-    public function getLogger()
-    {
-        if (!$this->logger) {
-            /** @var LoggerInterface $logger */
-            $logger = $this->getContainer()->get('logger');
-            $this->setLogger($logger);
-        }
-        return $this->logger;
-    }
-
-    /**
-     * Sets logger property
-     *
-     * @param LoggerInterface $logger
-     *
-     * @return Recover
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
         return $this;
     }
 
