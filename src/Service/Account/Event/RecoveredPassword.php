@@ -23,5 +23,5 @@ class RecoveredPassword extends AccountEvent implements EventInterface
     /**
      * Event name
      */
-    const NAME = 'email-change';
+    const NAME = 'password-change';
 }
