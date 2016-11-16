@@ -11,7 +11,7 @@ namespace Slick\Users\Controller;
 
 use Slick\Filter\StaticFilter;
 use Slick\Orm\Orm;
-use Slick\Users\Domain\Repository\TokenRepository;
+use Slick\Users\Domain\Repository\TokenRepositoryInterface;
 use Slick\Users\Domain\Token;
 use Slick\Users\Exception\Accounts\InvalidTokenException;
 use Slick\Users\Form\PasswordChangeFormInterface;
@@ -44,7 +44,7 @@ class Passwords extends BaseController
     protected $token;
 
     /**
-     * @var TokenRepository
+     * @var TokenRepositoryInterface
      */
     protected $tokenRepository;
 
@@ -165,7 +165,7 @@ class Passwords extends BaseController
     /**
      * Get token repository
      *
-     * @return TokenRepository
+     * @return TokenRepositoryInterface
      */
     public function getTokenRepository()
     {
@@ -178,10 +178,10 @@ class Passwords extends BaseController
     /**
      * Set token repository
      *
-     * @param TokenRepository $tokenRepository
+     * @param TokenRepositoryInterface $tokenRepository
      * @return Passwords
      */
-    public function setTokenRepository(TokenRepository $tokenRepository)
+    public function setTokenRepository(TokenRepositoryInterface $tokenRepository)
     {
         $this->tokenRepository = $tokenRepository;
         return $this;

@@ -15,7 +15,7 @@ namespace Slick\Users\Service\Account;
  * @package Slick\Users\Service\Account
  * @author  Filipe Silva <silvam.filipe@gmail.com>
  */
-class PasswordEncryptionService
+class PasswordEncryptionService implements PasswordEncryptionInterface
 {
     /**
      * @var string
@@ -37,9 +37,9 @@ class PasswordEncryptionService
      *
      * @param string $plainTextPassword
      */
-    public function __construct($plainTextPassword)
+    public function __construct($plainTextPassword = null)
     {
-        $this->password  = $plainTextPassword;
+        $this->setPassword($plainTextPassword);
     }
 
     /**
@@ -79,5 +79,18 @@ class PasswordEncryptionService
     public function __toString()
     {
         return $this->hash();
+    }
+
+    /**
+     * Set plain password to be hashed
+     *
+     * @param string $plainPassword
+     *
+     * @return PasswordEncryptionService|PasswordEncryptionInterface
+     */
+    public function setPassword($plainPassword)
+    {
+        $this->password = $plainPassword;
+        return $this;
     }
 }

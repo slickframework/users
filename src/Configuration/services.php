@@ -52,6 +52,7 @@ $services['accountRegister'] = ObjectDefinition::create(Register::class)
     ->setConstructArgs(['@logger']);
 $services['accountAuthentication'] = ObjectDefinition::create(\Slick\Users\Service\Account\Authentication::class)
     ->setConstructArgs(['@logger']);
+$services['passwordEncryptionService'] = ObjectDefinition::create(\Slick\Users\Service\Account\PasswordEncryptionService::class);
 $services['accountEventEmitter'] = ObjectDefinition::create(
     AccountEventEmitter::class
 )->setMethod('useListenerProvider', ['@accountEventsListenerProvider']);

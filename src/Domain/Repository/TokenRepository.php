@@ -11,7 +11,6 @@ namespace Slick\Users\Domain\Repository;
 
 use Slick\Database\Sql;
 use Slick\Orm\Repository\EntityRepository;
-use Slick\Orm\RepositoryInterface;
 use Slick\Users\Domain\Token;
 
 /**
@@ -20,7 +19,7 @@ use Slick\Users\Domain\Token;
  * @package Slick\Users\Domain\Repository
  * @author  Filipe Silva <silvam.filipe@gmail.com>
  */
-class TokenRepository extends EntityRepository implements RepositoryInterface
+class TokenRepository extends EntityRepository implements TokenRepositoryInterface
 {
 
     /**

@@ -10,7 +10,10 @@
 namespace Slick\Users\Service\Account\Register;
 
 use Slick\Common\Base;
+use Slick\Users\Service\Account\PasswordEncryptionInterface;
 use Slick\Users\Service\Account\PasswordEncryptionService;
+use Slick\Users\Shared\Di\DependencyContainerAwareInterface;
+use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
 
 /**
  * Account Register Request
@@ -21,9 +24,9 @@ use Slick\Users\Service\Account\PasswordEncryptionService;
  * @property string $name
  * @property string $email
  *
- * @property PasswordEncryptionService $password
+ * @property PasswordEncryptionInterface $password
  */
-class RegisterRequest extends Base
+class RegisterRequest extends Base implements DependencyContainerAwareInterface
 {
 
     /**
@@ -40,9 +43,19 @@ class RegisterRequest extends Base
 
     /**
      * @read
-     * @var string
+     * @var string|PasswordEncryptionInterface
      */
     protected $password;
+
+    /**
+     * @var PasswordEncryptionInterface
+     */
+    protected $encryptionService;
+
+    /**
+     * Used to access dependency container
+     */
+    use DependencyContainerAwareMethods;
 
     /**
      * Account Register Request
@@ -62,13 +75,43 @@ class RegisterRequest extends Base
     /**
      * Gets the password encrypted
      *
-     * @return PasswordEncryptionService
+     * @return PasswordEncryptionInterface
      */
     public function getPassword()
     {
         if (! $this->password instanceof PasswordEncryptionService) {
-            $this->password = new PasswordEncryptionService($this->password);
+            $this->password = $this->getEncryptionService()->setPassword($this->password);
         }
         return $this->password;
+    }
+
+    /**
+     * Get encryption service
+     *
+     * @return PasswordEncryptionInterface
+     */
+    public function getEncryptionService()
+    {
+        if (!$this->encryptionService) {
+            $this->setEncryptionService(
+                $this->getContainer()->get('passwordEncryptionService')
+            );
+        }
+
+        return $this->encryptionService;
+    }
+
+    /**
+     * Set encryption service
+     *
+     * @param PasswordEncryptionInterface $encryptionService
+     *
+     * @return RegisterRequest
+     */
+    public function setEncryptionService(
+        PasswordEncryptionInterface $encryptionService
+    ) {
+        $this->encryptionService = $encryptionService;
+        return $this;
     }
 }
