@@ -3,7 +3,7 @@ default:
     all_features_suite:
       contexts:
         - FeatureContext
-        - MessagesContext:
+        - BrowserContext:
           - parameters:
             mailcatcher: http://192.168.99.100:1080
   extensions:
