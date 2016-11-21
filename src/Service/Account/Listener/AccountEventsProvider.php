@@ -30,7 +30,10 @@ class AccountEventsProvider implements ListenerProviderInterface
      * @var array List of listeners in this provider
      */
     private $listeners = [
-        SignIn::NAME            => AccountSignIn::class,
+        SignIn::NAME            => [
+            AccountSignIn::class,
+            RememberMe::class
+        ],
         EmailChange::NAME       => EmailChanged::class,
         SignUp::NAME            => [
             EmailChanged::class,

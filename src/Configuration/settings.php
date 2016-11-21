@@ -32,6 +32,14 @@ $settings['users-db'] = [
 ];
 
 // ------------------------------------
+//  Remember me settings
+// ------------------------------------
+$settings['rememberMe'] = [
+    'expire' => 30*24*60*60, // Store for 30 days
+    'cookie' => 'users-rmm'
+];
+
+// ------------------------------------
 //  Sending e-mail settings
 // ------------------------------------
 $settings['email'] = [
