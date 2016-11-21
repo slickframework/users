@@ -22,6 +22,16 @@ class RecoverEmailSender extends ConfirmEmailSender
 {
 
     /**
+     * @var RecoverPasswordEmail
+     */
+    protected $recoverPasswordEmail;
+
+    /**
+     * @var Account
+     */
+    protected $account;
+
+    /**
      * Sends out the e-mail message
      *
      * This method should return a boolean true if the message was successfully
@@ -33,21 +43,55 @@ class RecoverEmailSender extends ConfirmEmailSender
      */
     public function sendTo(Account $account)
     {
-        $this->getEmailTransport()->send(
-            $this->getRecoverEmail($account)->prepareMessage()
-        );
+        $this->setAccount($account);
+        $message = $this
+            ->getRecoverPasswordEmail()
+            ->prepareMessage();
+
+        $this->getEmailTransport()->send($message);
         return true;
     }
 
     /**
-     * Get a confirmation e-mail message object
+     * Set account for e-mail
      *
      * @param Account $account
      *
+     * @return RecoverEmailSender
+     */
+    public function setAccount(Account $account)
+    {
+        $this->account = $account;
+        return $this;
+    }
+
+    /**
+     * Get recover e-mail message
+     *
      * @return RecoverPasswordEmail
      */
-    public function getRecoverEmail(Account $account)
+    public function getRecoverPasswordEmail()
     {
-        return new RecoverPasswordEmail($account);
+        if (!$this->recoverPasswordEmail) {
+            $this->setRecoverPasswordEmail(
+                new RecoverPasswordEmail($this->account)
+            );
+        }
+        return $this->recoverPasswordEmail;
     }
+
+    /**
+     * Set the recover e-mail message
+     *
+     * @param RecoverPasswordEmail $recoverPasswordEmail
+     *
+     * @return RecoverEmailSender
+     */
+    public function setRecoverPasswordEmail(
+        RecoverPasswordEmail $recoverPasswordEmail
+    ) {
+        $this->recoverPasswordEmail = $recoverPasswordEmail;
+        return $this;
+    }
+
 }

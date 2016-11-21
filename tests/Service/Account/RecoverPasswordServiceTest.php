@@ -9,8 +9,9 @@
 
 namespace Slick\Users\Tests\Service\Account;
 
-use Slick\Orm\RepositoryInterface;
+use Slick\Users\Domain\Account;
 use Slick\Users\Domain\Repository\AccountsRepositoryInterface;
+use Slick\Users\Service\Account\Email\RecoverEmailSender;
 use Slick\Users\Service\Account\RecoverPasswordService;
 use Slick\Users\Tests\TestCase;
 
@@ -44,5 +45,48 @@ class RecoverPasswordServiceTest extends TestCase
     {
         $repo = $this->service->getAccountRepository();
         $this->assertInstanceOf(AccountsRepositoryInterface::class, $repo);
+    }
+
+    public function testGetAccount()
+    {
+        $email = 'jon.doe@example.com';
+        $account = new Account(['email' => $email]);
+        $repo = \Phake::mock(AccountsRepositoryInterface::class);
+        \Phake::when($repo)->getByEmail($email)->thenReturn($account);
+        $this->service->setEmail($email)->setAccountRepository($repo);
+        $this->assertSame($account, $this->service->getAccount());
+    }
+
+    public function testGetRecoverEmailSender()
+    {
+        $service = \Phake::mock(RecoverEmailSender::class);
+        $dep = ['recoverEmailSender' => $service];
+        $this->service->setContainer($this->getContainerMock($dep));
+        $this->assertSame($service, $this->service->getRecoverEmailSender());
+    }
+
+    public function testRequestEmail()
+    {
+        $account = new Account();
+        $sender = \Phake::mock(RecoverEmailSender::class);
+        $this->service
+            ->setRecoverEmailSender($sender)
+            ->setAccount($account)
+            ->requestEmail();
+        \Phake::verify($sender)->sendTo($account);
+    }
+
+    /**
+     * @expectedException \Slick\Users\Exception\Accounts\UnknownEmailException
+     */
+    public function testSendToInvalidAccount()
+    {
+        $email = 'jon.doe@example.com';
+        $repo = \Phake::mock(AccountsRepositoryInterface::class);
+        \Phake::when($repo)->getByEmail($email)->thenReturn(null);
+        $this->service
+            ->setEmail($email)
+            ->setAccountRepository($repo)
+            ->requestEmail();
     }
 }

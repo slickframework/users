@@ -41,6 +41,11 @@ class Authentication extends AccountService implements
     protected $repository;
 
     /**
+     * @var PasswordEncryptionInterface
+     */
+    protected $encryptionService;
+
+    /**
      * Check if provided username and password is from a valid account
      *
      * @param string $username
@@ -142,8 +147,35 @@ class Authentication extends AccountService implements
      */
     protected function validate(Credential $credential, $password)
     {
-        $encryptionService = new PasswordEncryptionService($password);
-        return $encryptionService->match($credential->password);
+        $this->getEncryptionService()->setPassword($password);
+        return $this->getEncryptionService()->match($credential->password);
     }
 
+    /**
+     * Get password encryption service
+     *
+     * @return PasswordEncryptionInterface
+     */
+    public function getEncryptionService()
+    {
+        if (!$this->encryptionService) {
+            $this->setEncryptionService(
+                $this->getContainer()->get('passwordEncryptionService')
+            );
+        }
+        return $this->encryptionService;
+    }
+
+    /**
+     * Set password encryption service
+     *
+     * @param PasswordEncryptionInterface $encryptionService
+     * @return Authentication
+     */
+    public function setEncryptionService(
+        PasswordEncryptionInterface $encryptionService
+    ) {
+        $this->encryptionService = $encryptionService;
+        return $this;
+    }
 }
