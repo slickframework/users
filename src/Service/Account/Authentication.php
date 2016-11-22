@@ -14,6 +14,7 @@ use Slick\Orm\Orm;
 use Slick\Orm\RepositoryInterface;
 use Slick\Users\Domain\Account;
 use Slick\Users\Domain\Credential;
+use Slick\Users\Domain\Token;
 use Slick\Users\Service\Account\Event\SignIn;
 use Slick\Users\Shared\Di\DependencyContainerAwareInterface;
 
@@ -44,6 +45,11 @@ class Authentication extends AccountService implements
      * @var PasswordEncryptionInterface
      */
     protected $encryptionService;
+
+    /**
+     * @var CookieTokenStorageInterface
+     */
+    protected $cookieService;
 
     /**
      * Check if provided username and password is from a valid account
@@ -176,6 +182,44 @@ class Authentication extends AccountService implements
         PasswordEncryptionInterface $encryptionService
     ) {
         $this->encryptionService = $encryptionService;
+        return $this;
+    }
+
+    /**
+     * Remember last logged in user
+     *
+     * @return $this|Authentication
+     */
+    public function remember()
+    {
+        $token = new Token(['account' => $this->getAccount()]);
+        $this->getCookieService()->set('users-rmm', $token);
+        return $this;
+    }
+
+    /**
+     * Get cookie service
+     *
+     * @return CookieTokenStorageInterface
+     */
+    public function getCookieService()
+    {
+        if (!$this->cookieService) {
+            $this->setCookieService(new CookieTokenStorageService());
+        }
+        return $this->cookieService;
+    }
+
+    /**
+     * Set cookie service
+     *
+     * @param CookieTokenStorageInterface $cookieService
+     * @return Authentication
+     */
+    public function setCookieService(
+        CookieTokenStorageInterface $cookieService
+    ) {
+        $this->cookieService = $cookieService;
         return $this;
     }
 }

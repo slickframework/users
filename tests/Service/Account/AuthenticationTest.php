@@ -19,7 +19,7 @@ use Slick\Users\Domain\Credential;
 use Slick\Users\Service\Account\Authentication;
 use Slick\Users\Service\Account\PasswordEncryptionService;
 
-include 'functions.php';
+include_once 'functions.php';
 
 /**
  * Authentication Service Test Case

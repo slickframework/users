@@ -130,10 +130,14 @@ class Login extends BaseController implements
     protected function validateAccount()
     {
         $data = $this->getLoginForm()->getData();
+        $data['remember'] = array_key_exists('remember', $_POST);
         try {
             $valid = $this->getLoginForm()->isValid() &&
                 $this->getAccountAuthenticationService()
                     ->login($data['username'], $data['password']);
+                if ($data['remember'])
+                    $this->getAccountAuthenticationService()
+                        ->remember();
             if ($valid) {
                 $page = $this->getSessionDriver()
                     ->get(
