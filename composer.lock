@@ -1170,12 +1170,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/slickframework/form.git",
-                "reference": "fdb90f2dab197a172f0bf650d28bdeb6cfd2bd68"
+                "reference": "da1d259c53de1645e46646a92d27357a36085d30"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/slickframework/form/zipball/fdb90f2dab197a172f0bf650d28bdeb6cfd2bd68",
-                "reference": "fdb90f2dab197a172f0bf650d28bdeb6cfd2bd68",
+                "url": "https://api.github.com/repos/slickframework/form/zipball/da1d259c53de1645e46646a92d27357a36085d30",
+                "reference": "da1d259c53de1645e46646a92d27357a36085d30",
                 "shasum": ""
             },
             "require": {
@@ -1223,7 +1223,7 @@
                 "form manipulation",
                 "slick"
             ],
-            "time": "2016-05-30 12:50:41"
+            "time": "2016-11-23 18:49:51"
         },
         {
             "name": "slick/http",
