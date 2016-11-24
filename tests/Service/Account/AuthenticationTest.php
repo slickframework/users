@@ -16,7 +16,9 @@ use Slick\Orm\Repository\QueryObject\QueryObjectInterface;
 use Slick\Orm\RepositoryInterface;
 use Slick\Users\Domain\Account;
 use Slick\Users\Domain\Credential;
+use Slick\Users\Domain\Token;
 use Slick\Users\Service\Account\Authentication;
+use Slick\Users\Service\Account\CookieTokenStorageInterface;
 use Slick\Users\Service\Account\PasswordEncryptionService;
 
 include_once 'functions.php';
@@ -124,5 +126,33 @@ class AuthenticationTest extends TestCase
         )->thenReturn($query);
         \Phake::when($query)->first()->thenReturn($return);
         return $query;
+    }
+
+    public function testGetCookieService()
+    {
+        $service = $this->service->getCookieService();
+        $this->assertInstanceOf(CookieTokenStorageInterface::class, $service);
+    }
+
+    public function testGetToken()
+    {
+        $account = \Phake::mock(Account::class);
+        $this->service->setAccount($account);
+        $token = $this->service->getToken();
+        $this->assertSame($account, $token->account);
+    }
+
+    public function testRememberCookieSave()
+    {
+        $account = \Phake::mock(Account::class);
+        $token = \Phake::partialMock(Token::class, [
+            'account' => $account,
+            'action' => Token::ACTION_REMEMBER
+        ]);
+        \Phake::when($token)->save()->thenReturn(1);
+        $this->service->setToken($token);
+        $cookieService = \Phake::mock(CookieTokenStorageInterface::class);
+        $this->service->setCookieService($cookieService);
+        $this->service->remember(true);
     }
 }

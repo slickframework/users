@@ -41,8 +41,9 @@ namespace Slick\Users\Domain {
         /**#@+
          * Token known actions
          */
-        const ACTION_RECOVER = 'recover';
-        const ACTION_CONFIRM = 'confirm';
+        const ACTION_RECOVER  = 'recover';
+        const ACTION_CONFIRM  = 'confirm';
+        const ACTION_REMEMBER = 'remember';
         /**#@- */
 
         /**

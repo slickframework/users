@@ -16,6 +16,9 @@ use Slick\Users\Domain\Account;
 use Slick\Users\Domain\Credential;
 use Slick\Users\Domain\Token;
 use Slick\Users\Service\Account\Event\SignIn;
+use Slick\Users\Shared\Configuration\SettingsAwareInterface;
+use Slick\Users\Shared\Configuration\SettingsAwareMethods;
+use Slick\Users\Shared\DataType\DateTime;
 use Slick\Users\Shared\Di\DependencyContainerAwareInterface;
 
 /**
@@ -26,8 +29,11 @@ use Slick\Users\Shared\Di\DependencyContainerAwareInterface;
  */
 class Authentication extends AccountService implements
     EmitterAwareInterface,
-    DependencyContainerAwareInterface
+    DependencyContainerAwareInterface,
+    SettingsAwareInterface
 {
+
+    use SettingsAwareMethods;
 
     const SESSION_KEY = 'sign-in-data';
 
@@ -50,6 +56,11 @@ class Authentication extends AccountService implements
      * @var CookieTokenStorageInterface
      */
     protected $cookieService;
+
+    /**
+     * @var Token
+     */
+    protected $token;
 
     /**
      * Check if provided username and password is from a valid account
@@ -93,6 +104,20 @@ class Authentication extends AccountService implements
     {
         return $this->account;
     }
+
+    /**
+     * Set account
+     *
+     * @param Account $account
+     *
+     * @return Authentication
+     */
+    public function setAccount(Account $account)
+    {
+        $this->account = $account;
+        return $this;
+    }
+
 
     /**
      * Gets repository property
@@ -197,8 +222,8 @@ class Authentication extends AccountService implements
     public function remember($remember = true)
     {
         if (!$remember) return $this;
-        $token = new Token(['account' => $this->getAccount()]);
-        $this->getCookieService()->set('users-rmm', $token);
+        $this->getCookieService()->set('users-rmm', $this->getToken());
+        $this->getToken()->save();
         return $this;
     }
 
@@ -225,6 +250,41 @@ class Authentication extends AccountService implements
         CookieTokenStorageInterface $cookieService
     ) {
         $this->cookieService = $cookieService;
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return Token
+     */
+    public function getToken()
+    {
+        if (!$this->token) {
+            $ttl = new DateTime(
+                time()+$this->getSettings()->get('rememberMe.expire')
+            );
+            $this->setToken(new Token(
+                [
+                    'account' => $this->getAccount(),
+                    'action' => Token::ACTION_REMEMBER,
+                    'ttl' => $ttl
+                ]
+            ));
+        }
+        return $this->token;
+    }
+
+    /**
+     * Set token
+     *
+     * @param Token $token
+     *
+     * @return Authentication
+     */
+    public function setToken(Token $token)
+    {
+        $this->token = $token;
         return $this;
     }
 }

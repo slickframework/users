@@ -139,8 +139,8 @@ $services['middleware.runner'] = ObjectDefinition::create(Server::class)
     ->setMethod('add', ['@url.rewrite.middleware'])
     ->setMethod('add', ['@router.middleware'])
     ->setMethod('add', ['@emailConfirm.middleware'])
-    ->setMethod('add', ['@authentication.middleware'])
     ->setMethod('add', ['@rememberMe.middleware'])
+    ->setMethod('add', ['@authentication.middleware'])
     ->setMethod('add', ['@dispatcher.middleware'])
     ->setMethod('add', ['@renderer.middleware']);
 return $services;
