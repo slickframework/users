@@ -56,10 +56,11 @@ class Authentication extends AccountService implements
      *
      * @param string $username
      * @param string $password
+     * @param boolean $remember
      *
      * @return boolean
      */
-    public function login($username, $password)
+    public function login($username, $password, $remember = false)
     {
         $credential = $this->getCredentialFor($username);
         if ($credential && $this->validate($credential, $password)) {
@@ -71,6 +72,7 @@ class Authentication extends AccountService implements
                 "User {$this->account} has successful signed in.",
                 $this->account->asArray()
             );
+            $this->remember($remember);
             return true;
         }
         $this->logger->info(
@@ -188,10 +190,13 @@ class Authentication extends AccountService implements
     /**
      * Remember last logged in user
      *
+     * @param boolean $remember
+     *
      * @return $this|Authentication
      */
-    public function remember()
+    public function remember($remember = true)
     {
+        if (!$remember) return $this;
         $token = new Token(['account' => $this->getAccount()]);
         $this->getCookieService()->set('users-rmm', $token);
         return $this;
