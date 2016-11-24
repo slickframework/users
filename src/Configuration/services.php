@@ -110,6 +110,7 @@ $services['response'] = ObjectDefinition::create(Response::class);
 // ------------------------------------
 // Middleware
 // ------------------------------------
+$services['rememberMe.middleware']      = ObjectDefinition::create(\Slick\Users\Service\Http\RememberMeLoginMiddleware::class);
 $services['session.middleware']      = ObjectDefinition::create(Session::class);
 $services['authentication.middleware']  = ObjectDefinition::create(\Slick\Users\Service\Http\AuthenticationMiddleware::class);
 $services['emailConfirm.middleware'] = ObjectDefinition::create(\Slick\Users\Service\Http\EmailConfirmationMiddleware::class);
@@ -139,6 +140,7 @@ $services['middleware.runner'] = ObjectDefinition::create(Server::class)
     ->setMethod('add', ['@router.middleware'])
     ->setMethod('add', ['@emailConfirm.middleware'])
     ->setMethod('add', ['@authentication.middleware'])
+    ->setMethod('add', ['@rememberMe.middleware'])
     ->setMethod('add', ['@dispatcher.middleware'])
     ->setMethod('add', ['@renderer.middleware']);
 return $services;
