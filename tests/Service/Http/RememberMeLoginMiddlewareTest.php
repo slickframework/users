@@ -16,7 +16,6 @@ use Slick\Users\Domain\Account;
 use Slick\Users\Domain\Repository\TokenRepositoryInterface;
 use Slick\Users\Domain\Token;
 use Slick\Users\Service\Account\Authentication;
-use Slick\Users\Service\Account\Listener\AccountSignIn;
 use Slick\Users\Service\Http\RememberMeLoginMiddleware;
 use Slick\Users\Tests\TestCase;
 
@@ -73,17 +72,31 @@ class RememberMeLoginMiddlewareTest extends TestCase
             'account' => $account
         ]);
         \Phake::when($token)->isValid()->thenReturn(true);
+        \Phake::when($token)->save()->thenReturn(1);
         \Phake::when($token)->delete()->thenReturn(1);
         $this->middleware->setToken($token);
 
         $request = \Phake::mock(ServerRequestInterface::class);
         $response = \Phake::mock(ResponseInterface::class);
 
+        $newToken = \Phake::mock(Token::class);
+        \Phake::when($newToken)->save()->thenReturn(1);
+        $this->middleware->setNewToken($newToken);
+
         $this->middleware->handle($request, $response);
         $data = $_SESSION['slick_'.Authentication::SESSION_KEY];
         $this->assertInstanceOf(Authentication\SignedInAccount::class, $data);
         $this->assertSame($account, $data->account);
         \Phake::verify($token)->delete();
+    }
+
+    public function testGetNewToken()
+    {
+        $account = new Account();
+        $token = new Token(['account' => $account]);
+        $this->middleware->setToken($token);
+        $newToken = $this->middleware->getNewToken();
+        $this->assertSame($account, $newToken->account);
     }
 
     /**

@@ -21,3 +21,6 @@ Feature: Remember me login
     When I restart the browser
     And I am on "profile"
     Then the "Public e-mail address" field should contain "jon.doe@example.com"
+    When I am on "sign-out"
+    And I am on "profile"
+    Then I should see "Sign in"
