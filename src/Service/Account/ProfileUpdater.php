@@ -36,7 +36,6 @@ class ProfileUpdater extends AccountService implements
      */
     public function update(Account $account)
     {
-        $account->confirmed = 0;
         $credential = $account->credential;
         if ($credential->email !== $account->email) {
             $account->confirmed = 0;
