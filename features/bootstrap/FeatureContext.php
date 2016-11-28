@@ -40,8 +40,8 @@ class FeatureContext implements Context
      */
     public static function setup(BeforeSuiteScope $scope)
     {
-        $host = getenv('DOCKER_HOST')
-            ? getenv('DOCKER_HOST')
+        $host = getenv('DOCKER_HOSTNAME')
+            ? getenv('DOCKER_HOSTNAME')
             : 'db';
         static::$options['options']['host'] = $host;
         $sql = file_get_contents(__DIR__.'/db-dump.sql');
