@@ -10,6 +10,7 @@ Feature: Remember me login
     - Profile change needs password to continue
     - If a token is found but its hash does not match ALL token accounts must be deleted.
 
+  @javascript
   Scenario: Be remembered after browser closes
     Given I am on "profile"
     And I fill in the following:

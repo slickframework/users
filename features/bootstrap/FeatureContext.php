@@ -40,10 +40,9 @@ class FeatureContext implements Context
      */
     public static function setup(BeforeSuiteScope $scope)
     {
-        $host = 'db';
-        if (getenv('RUNNING_ENV') !== 'docker-container') {
-            $host = '192.168.99.100';
-        }
+        $host = getenv('DOCKER_HOST')
+            ? getenv('DOCKER_HOST')
+            : 'db';
         static::$options['options']['host'] = $host;
         $sql = file_get_contents(__DIR__.'/db-dump.sql');
         $adapter = new \Slick\Database\Adapter(static::$options);

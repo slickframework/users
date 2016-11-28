@@ -18,18 +18,21 @@
     And I press "Sign in"
     Then I should see "Public profile"
 
+  @ci
   Scenario: Change full name
     Given I fill in "Name" with "Jon Doe"
     When I press "Update profile"
     Then I should see "Your profile information was successfully updated."
     And the "Name" field should contain "Jon Doe"
 
+  @ci
   Scenario: Entering existing (duplicate) e-mail
     Given I fill in "Public e-mail address" with "silvam.filipe@gmail.com"
     When I press "Update profile"
     Then I should see "The e-mail address already exists. Is it yours?"
     And I should see "Your profile was not updated. Please check the errors below and try again."
 
+  @ci
   Scenario: Changing the e-mail address
     Given I fill in "Public e-mail address" with "jon.doe@example.com"
     When I press "Update profile"
@@ -39,6 +42,7 @@
     And I should not see "Address is confirmed!"
     And I should see "Not checked!"
 
+  @ci
   Scenario: Should be able to sign in with new e-mail
     Given I am on "sign-out"
     And I am on "profile"

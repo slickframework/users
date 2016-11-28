@@ -4,7 +4,7 @@
     As a wetsite user
     I navigate to the root of the web site
 
-
+  @ci
   Scenario: Get to te home page
     Given I am on the homepage
     Then I should see "Sign in"

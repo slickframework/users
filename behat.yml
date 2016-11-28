@@ -1,14 +1,30 @@
 default:
   suites:
-    all_features_suite:
+    all_features:
       contexts:
         - FeatureContext
         - BrowserContext:
           - parameters:
-            mailcatcher: http://192.168.99.100:1080
+            mailcatcher: http://0.0.0.0:1080
+    ci:
+      contexts:
+        - FeatureContext
+        - BrowserContext:
+          - parameters:
+            mailcatcher: http://0.0.0.0:1080
+      filters:
+        tags: @ci
+    javascript:
+      contexts:
+        - FeatureContext
+        - BrowserContext:
+          - parameters:
+            mailcatcher: http://0.0.0.0:1080
+      filters:
+        tags: @javascript
   extensions:
     Behat\MinkExtension:
-#      goutte: ~
+      goutte: ~
       selenium2: ~
-      base_url: http://192.168.99.100:8880
+      base_url: http://0.0.0.0:8880
       browser_name: chrome

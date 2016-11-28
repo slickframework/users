@@ -12,6 +12,7 @@
     And I press "Sign in"
     Then I should see "Public profile"
 
+  @ci
   Scenario: Change the email address
     Given I fill in "Public e-mail address" with "jon.doe@example.org"
     When I press "Update profile"

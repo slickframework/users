@@ -8,16 +8,19 @@ Feature: Recover password
     And I follow "Did you forgot your password?"
     And I fill in "E-mail address" with "jane.doe@example.com"
 
+  @ci
   Scenario: unknown e-mail address
     Given I fill in "E-mail address" with "someone@example.com"
     When I press "Recover my password"
     Then I should see "We don't have any account with this e-mail address."
 
+  @ci
   Scenario: invalid e-mail address
     Given I fill in "E-mail address" with "someone.example.com"
     When I press "Recover my password"
     Then I should see "It seems that this is not a valid e-mail address."
 
+  @ci
   Scenario: fail inserting password
     Given I press "Recover my password"
     And I should receive an e-mail on "jane.doe@example.com" address
@@ -27,6 +30,7 @@ Feature: Recover password
     And I press "Change my password"
     Then I should see "The passwords don't match."
 
+  @ci
   Scenario: Recover the password
     Given I press "Recover my password"
     Then I should receive an e-mail on "jane.doe@example.com" address
