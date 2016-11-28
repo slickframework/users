@@ -49,10 +49,18 @@ gulp.task('javascript', ['bower'], function () {
         gulp.src(sources)
             .pipe(gulp.dest(cfg.destination+'/'+modules[i]));
     }
+
+    // bootstrap file input
+    gulp.src(settings.bower + '/bootstrap-fileinput/js/**/*.js')
+        .pipe(gulp.dest(cfg.destination + '/bootstrap-fileinput/js'));
+    gulp.src(settings.bower + '/bootstrap-fileinput/themes/**/*.js')
+        .pipe(gulp.dest(cfg.destination + '/bootstrap-fileinput/themes'))
 });
 
 // Load bootstrap sass files
 gulp.task('bootstrap-sass', ['bower'], function () {
+    gulp.src(settings.bower + '/bootstrap-fileinput/sass/**/*.scss')
+        .pipe(gulp.dest(settings.sass.vendor + '/bootstrap-file-input'));
     return gulp.src(settings.bower + '/bootstrap/scss/**/*.scss')
         .pipe(gulp.dest(settings.sass.vendor+'/bootstrap'));
 });

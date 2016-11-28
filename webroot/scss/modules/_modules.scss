@@ -2,9 +2,14 @@
 /// the callouts, the sidebar sections, the product lists and so on.
 
 @import "bootstrap";
+// Bootstrap file input
+$image-path: "../img";
+@import "../vendors/bootstrap-file-input/fileinput";
+
 @import "font-awesome";
 
 @import "navbar";
 @import "sidebar";
 @import "starter-template";
 @import "login-form";
+@import "picture_upload";

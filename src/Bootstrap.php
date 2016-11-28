@@ -100,6 +100,17 @@ final class Bootstrap
             ->allows(['GET'])
             ->auth(false)
         ;
+
+        $map->post('picture-upload', '/account/picture')
+            ->defaults([
+                'namespace' => 'Slick\Users\Controller',
+                'controller' => 'upload',
+                'action' => 'handle',
+            ])
+            ->allows(['POST'])
+            ->auth(true)
+        ;
+
         $map->post('signIn', '/sign-in')
             ->defaults([
                 'namespace' => 'Slick\Users\Controller',

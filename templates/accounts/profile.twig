@@ -2,38 +2,71 @@
 
 {% block mainView %}
     {% set account = profileForm.getAccount %}
-    <div class="card card-block">
-        <h4 class="card-title">{{ translate('Public profile') }}</h4>
-        <form action="" method="post">
-            {{ profileForm.get('id')|raw }}
-            {{ profileForm.get('form-id')|raw }}
-            {{ profileForm.get('name')|raw }}
-            {% set element = profileForm.get('email') %}
-            {% set checked = account.isConfirmed ? 'has-success' : 'has-warning' %}
-            <div class="form-group required {{ element.isValid ? checked : 'has-error' }}">
-                {{ element.getLabel()|raw }}
-                <div class="input-group">
-                    <input required value="{{ element.value }}" id="input-email" name="{{ element.name }}" type="email" class="form-control {{ account.isConfirmed ? 'form-control-success' : 'form-control-warning' }}" >
-                    <span class="input-group-btn hidden-xs-down">
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-8">
+            <div class="card card-block">
+                <h4 class="card-title">{{ translate('Public profile') }}</h4>
+                <hr>
+                <form action="" method="post">
+                    {{ profileForm.get('id')|raw }}
+                    {{ profileForm.get('form-id')|raw }}
+                    {{ profileForm.get('name')|raw }}
+                    {% set element = profileForm.get('email') %}
+                    {% set checked = account.isConfirmed ? 'has-success' : 'has-warning' %}
+                    <div class="form-group required {{ element.isValid ? checked : 'has-error' }}">
+                        {{ element.getLabel()|raw }}
+                        <div class="input-group">
+                            <input required value="{{ element.value }}" id="input-email" name="{{ element.name }}" type="email" class="form-control {{ account.isConfirmed ? 'form-control-success' : 'form-control-warning' }}" >
+                            <span class="input-group-btn hidden-md-down">
                     <button class="btn {{ account.isConfirmed ? 'btn-success' : 'btn-warning' }}" type="button">{{ account.isConfirmed ? translate('Address is confirmed!') : translate('Not checked!')}}</button>
                 </span>
-                </div>
-                {% if not element.isValid %}
-                <small class="help-block">
-                    {% for message in element.getValidationChain.getMessages %}
-                        {{ message }}{% if not loop.last %}<br>{% endif %}
-                    {% endfor %}
-                </small>
-                    <br>&nbsp;
-                {% endif %}
-                <small class="text-muted">
-                    {{ translate("Changing your e-mail address requires you to confirm it. So if you change your e-mail address a confirmation message will be sent to you so that you can confirm it.") }}
-                    <br>&nbsp;{{ translate("If you don't receive any e-mail from us you can <a href=\"%s\">request here a new confirmation e-mail message</a> and we will sent it again.")|format(url('confirmEmail', {'id': account.id}))|raw }}
-                </small>
+                        </div>
+                        {% if not element.isValid %}
+                            <small class="help-block">
+                                {% for message in element.getValidationChain.getMessages %}
+                                    {{ message }}{% if not loop.last %}<br>{% endif %}
+                                {% endfor %}
+                            </small>
+                            <br>&nbsp;
+                        {% endif %}
+                        <small class="text-muted">
+                            {{ translate("Changing your e-mail address requires you to confirm it. So if you change your e-mail address a confirmation message will be sent to you so that you can confirm it.") }}
+                            <br>&nbsp;{{ translate("If you don't receive any e-mail from us you can <a href=\"%s\">request here a new confirmation e-mail message</a> and we will sent it again.")|format(url('confirmEmail', {'id': account.id}))|raw }}
+                        </small>
+                    </div>
+
+                    {{ profileForm.get('buttonGroup')|raw }}
+                </form>
             </div>
 
-            {{ profileForm.get('buttonGroup')|raw }}
-        </form>
+        </div>
+
+        <div class="col-xs-12 col-sm-12 col-md-4">
+            <div class="card card-block">
+                <h4 class="card-title">{{ translate('Profile picture') }}</h4>
+                <hr>
+                <!-- the avatar markup -->
+                <div id="kv-avatar-errors" class="center-block" style="width:800px;display:none"></div>
+                <form class="text-center" action="{{ url('picture-upload') }}" method="post" enctype="multipart/form-data">
+                    <div class="kv-avatar center-block" style="width:200px">
+                        <input id="avatar" name="avatar" type="file" class="file-loading">
+                        <button type="submit" class="update-picture btn btn-primary">{{ translate('Update picture') }}</button>
+                    </div>
+                    <!-- include other inputs if needed and include a form submit (save) button -->
+                </form>
+                <script>
+                    var uploadTxt = {
+                        removeIcon: '<i class="fa fa-remove"></i>',
+                        removeTitle: '{{ translate('Cancel or reset changes') }}',
+                        imageAlt: '{{ translate('Your avatar') }}',
+                        imageTxt: '{{ translate('Click to select') }}',
+                        imageSrc: '{{ url('img/default_avatar_male.jpg') }}'
+                    };
+                </script>
+            </div>
+        </div>
     </div>
+
 
 {% endblock %}
