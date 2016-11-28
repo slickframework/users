@@ -72,4 +72,16 @@ final class UsersForms
         $form = FormRegistry::getForm(__DIR__.'/definitions/password-change-form.yml');
         return $form;
     }
+
+    /**
+     * Get the change picture form
+     *
+     * @return PictureFormInterface
+     */
+    public static function getPictureForm()
+    {
+        /** @var PictureFormInterface $form */
+        $form = FormRegistry::getForm(__DIR__.'/definitions/picture-form.yml');
+        return $form;
+    }
 }

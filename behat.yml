@@ -24,6 +24,7 @@ default:
         tags: @javascript
   extensions:
     Behat\MinkExtension:
+      files_path: %paths.base%/
       goutte: ~
       selenium2: ~
       base_url: http://0.0.0.0:8880

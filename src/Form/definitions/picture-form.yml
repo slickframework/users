@@ -1,0 +1,13 @@
+id: picture-form
+class: Slick\Users\Form\PictureForm
+elements:
+  avatar:
+    type: file
+  buttonGroup:
+    type: fieldset
+    elements:
+      submit:
+        type: submit
+        value: Update picture
+        attributes:
+          class: btn btn-primary
