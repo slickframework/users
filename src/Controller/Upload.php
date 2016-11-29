@@ -12,6 +12,11 @@ namespace Slick\Users\Controller;
 use Slick\I18n\TranslateMethods;
 use Slick\Mvc\Controller;
 use Slick\Mvc\Http\FlashMessagesMethods;
+use Slick\Users\Form\PictureFormInterface;
+use Slick\Users\Form\UsersForms;
+use Slick\Users\Service\Account\PictureUpdaterInterface;
+use Slick\Users\Shared\Di\DependencyContainerAwareInterface;
+use Slick\Users\Shared\Di\DependencyContainerAwareMethods;
 
 /**
  * Upload controller
@@ -19,7 +24,8 @@ use Slick\Mvc\Http\FlashMessagesMethods;
  * @package Slick\Users\Controller
  * @author  Filipe Silva <silvam.filipe@gmail.com>
  */
-class Upload extends Controller
+class Upload extends Controller implements
+    DependencyContainerAwareInterface
 {
 
     /**
@@ -33,15 +39,93 @@ class Upload extends Controller
     use TranslateMethods;
 
     /**
+     * Used to retrieve services from dependency container
+     */
+    use DependencyContainerAwareMethods;
+
+    /**
+     * @var PictureUpdaterInterface
+     */
+    protected $pictureService;
+
+    /**
+     * @var PictureFormInterface
+     */
+    protected $form;
+
+    /**
      * Handles the picture upgrade form submission
      */
     public function handle()
     {
-        $this->addSuccessMessage(
-            $this->translate(
-                "Your picture was successfully updated."
-            )
-        );
+        if ($this->getForm()->wasSubmitted()) {
+
+            $this->getPictureService()
+                ->setFile(
+                    $this->getForm()->getUploadedPicture()
+                );
+
+            $this->addSuccessMessage(
+                $this->translate(
+                    "Your picture was successfully updated."
+                )
+            );
+        }
+
         $this->redirect($this->getRequest()->getHeaderLine('referer'));
+    }
+
+    /**
+     * Get picture updater service
+     *
+     * @return PictureUpdaterInterface
+     */
+    public function getPictureService()
+    {
+        if (!$this->pictureService) {
+            $this->setPictureService(
+                $this->getContainer()->get('pictureUpdater')
+            );
+        }
+        return $this->pictureService;
+    }
+
+    /**
+     * Set picture updater service
+     *
+     * @param PictureUpdaterInterface $pictureService
+     *
+     * @return Upload
+     */
+    public function setPictureService(PictureUpdaterInterface $pictureService)
+    {
+        $this->pictureService = $pictureService;
+        return $this;
+    }
+
+    /**
+     * Get form
+     *
+     * @return PictureFormInterface
+     */
+    public function getForm()
+    {
+        if (!$this->form) {
+            $this->setForm(UsersForms::getPictureForm());
+        }
+        return $this->form;
+    }
+
+    /**
+     * Set form
+     *
+     * @param PictureFormInterface $form
+     *
+     * @return Upload
+     */
+    public function setForm(PictureFormInterface $form)
+    {
+        $this->form = $form;
+        return $this;
     }
 }

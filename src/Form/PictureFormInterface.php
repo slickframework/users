@@ -10,6 +10,7 @@
 namespace Slick\Users\Form;
 
 use Psr\Http\Message\UploadedFileInterface;
+use Slick\Form\FormInterface;
 
 /**
  * Picture Form Interface
@@ -17,7 +18,7 @@ use Psr\Http\Message\UploadedFileInterface;
  * @package Slick\Users\Form
  * @author  Filipe Silva <silvam.filipe@gmail.com>
  */
-interface PictureFormInterface
+interface PictureFormInterface extends FormInterface
 {
 
     /**

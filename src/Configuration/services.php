@@ -37,6 +37,8 @@ $services = [];
 // ------------------------------------
 // Application services
 // ------------------------------------
+$services['pictureUpdater'] = ObjectDefinition::create(\Slick\Users\Service\Account\PictureUpdaterService::class)
+    ->setConstructArgs(['@logger']);
 $services['profileUpdater'] = ObjectDefinition::create(\Slick\Users\Service\Account\ProfileUpdater::class)
     ->setConstructArgs(['@logger']);
 $services['changePasswordService'] = ObjectDefinition::create(\Slick\Users\Service\Account\ChangePasswordService::class)
