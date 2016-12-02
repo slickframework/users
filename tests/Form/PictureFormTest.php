@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file is part of Users
+ * This file is part of slick/users
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -9,7 +9,7 @@
 
 namespace Slick\Users\Tests\Form;
 
-use Slick\Users\Form\PictureForm;
+use Slick\Http\PhpEnvironment\Request;
 use Slick\Users\Form\UsersForms;
 use Slick\Users\Tests\TestCase;
 
@@ -28,6 +28,7 @@ class PictureFormTest extends TestCase
     public function testGetFile()
     {
         $back = $_FILES;
+        $post = $_POST;
         $_FILES = [
             'avatar' => [
                 'size' => 15476,
@@ -37,10 +38,16 @@ class PictureFormTest extends TestCase
                 'name' => 'avatar.jpg'
             ]
         ];
+        $_POST['form-id'] = 'picture-form';
+        $request = (new Request())
+            ->withParsedBody($_POST)
+            ->withMethod(Request::METHOD_POST)
+            ->withHeader('content-type', 'multipart\/form-data');
         $form = UsersForms::getPictureForm();
-        $form->get('avatar')->setValue($_FILES['avatar']);
+        $form->setRequest($request)->wasSubmitted();
         $file = $form->getUploadedPicture();
-        $this->assertEmpty('avatar.jpg', $file->getClientFilename());
+        $this->assertEquals('avatar.jpg', $file->getClientFilename());
         $_FILES = $back;
+        $_POST = $post;
     }
 }

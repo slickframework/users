@@ -21,6 +21,13 @@ class PictureUpdaterService extends AccountService implements
     PictureUpdaterInterface
 {
 
+    const PATH = 'webroot/media/picture';
+
+    /**
+     * @var string
+     */
+    protected $path;
+
     /**
      * Change the profile picture of current logged in account
      *
@@ -32,4 +39,33 @@ class PictureUpdaterService extends AccountService implements
     {
         // TODO: Implement setFile() method.
     }
+
+    /**
+     * Get path
+     *
+     * @return string
+     */
+    public function getPath()
+    {
+        if (null == $this->path) {
+            $this->setPath(
+                APP_PATH . DIRECTORY_SEPARATOR . self::PATH
+            );
+        }
+        return $this->path;
+    }
+
+    /**
+     * Set path
+     *
+     * @param string $path
+     *
+     * @return PictureUpdaterService
+     */
+    public function setPath($path)
+    {
+        $this->path = $path;
+        return $this;
+    }
+
 }
